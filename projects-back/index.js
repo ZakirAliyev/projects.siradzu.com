@@ -2,7 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { v4: uuidv4 } = require('uuid');
+const { randomUUID } = require('crypto');
 const slugify = require('slugify');
 const jwt = require('jsonwebtoken');
 const upload = require('./upload');
@@ -77,7 +77,7 @@ app.post(['/api/projects', '/projects'], authenticateToken, (req, res) => {
         }
 
         const newProject = {
-            id: uuidv4(),
+            id: randomUUID(),
             slug,
             order: projects.length,
             name: { az: name_az, en: name_en },
