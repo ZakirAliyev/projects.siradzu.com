@@ -9,7 +9,8 @@ const upload = require('./upload');
 const { readProjects, writeProjects } = require('./storage');
 
 const app = express();
-const PORT = process.env.PORT || 5005;
+const isProduction = process.env.USER === 'root' || process.env.HOME === '/root';
+const PORT = isProduction ? 5005 : (process.env.PORT || 5001);
 const JWT_SECRET = process.env.JWT_SECRET || 'texnocode_secret_key_2026';
 
 app.use(cors());
