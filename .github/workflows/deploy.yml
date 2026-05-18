@@ -76,30 +76,7 @@ jobs:
             pm2 delete projects-back || true
             pm2 start index.js --name projects-back
 
-            # Sleep 3 seconds to let backend initialize/crash if there's any error
-            sleep 3
+            # Clean up debug files
+            rm -f /var/www/projects-front/nginx-debug.txt /var/www/projects-front/projects/dist/nginx-debug.txt || true
 
-            mkdir -p /var/www/projects-front/projects/dist
-            mkdir -p /var/www/projects-front
-
-            {
-              echo "=== DATE ==="
-              date
-              echo "=== PM2 STATUS ==="
-              pm2 status
-              echo "=== PM2 SHOW ==="
-              pm2 show projects-back || true
-              echo "=== ACTUAL PM2 ERROR LOG ==="
-              cat /root/.pm2/logs/projects-back-error.log || true
-              echo "=== ACTUAL PM2 OUT LOG ==="
-              cat /root/.pm2/logs/projects-back-out.log || true
-              echo "=== LOCAL CURL PROJECTS ==="
-              curl -i http://localhost:5005/api/projects || true
-              echo "=== LOCAL CURL LOGIN ==="
-              curl -i -X POST -H "Content-Type: application/json" -d '{"email":"admin@texnocode.com","password":"Admin123!"}' http://localhost:5005/api/login || true
-              echo "=== NGINX CONFIG ==="
-              cat /etc/nginx/sites-enabled/* || true
-            } > /var/www/projects-front/nginx-debug.txt
-
-            cp /var/www/projects-front/nginx-debug.txt /var/www/projects-front/projects/dist/nginx-debug.txt || true
 
