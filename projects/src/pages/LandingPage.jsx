@@ -124,12 +124,6 @@ const LandingPage = () => {
                 EN
               </button>
             </div>
-
-            {/* Admin Panel Link */}
-            <Link to="/admin" className="admin-link-btn">
-              <Lock size={14} />
-              <span>{t.adminBtn}</span>
-            </Link>
           </div>
         </div>
       </nav>

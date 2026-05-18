@@ -51,6 +51,10 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: "projects-back/*"
           target: "/var/www/projects-back"
+          exclude: |
+            projects-back/projects.json
+            projects-back/uploads
+            projects-back/node_modules
 
       # RESTART BACKEND
       - name: Restart Backend
