@@ -43,9 +43,9 @@ const LandingPage = () => {
   };
 
   const getPreviewUrl = (fileUrl) => {
-    // Resolve absolute URL for Google Docs Viewer
+    // Resolve absolute URL for Microsoft Office Online Viewer (extremely reliable and high fidelity)
     const absoluteUrl = `${API_BASE}${fileUrl}`;
-    return `https://docs.google.com/viewer?url=${encodeURIComponent(absoluteUrl)}&embedded=true`;
+    return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(absoluteUrl)}`;
   };
 
   const filteredProjects = projects.filter(p => {

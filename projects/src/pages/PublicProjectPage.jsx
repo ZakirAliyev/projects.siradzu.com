@@ -28,8 +28,8 @@ const PublicProjectPage = () => {
   }, [slug]);
 
   const getPreviewUrl = (fileUrl) => {
-    const absoluteUrl = `${window.location.origin.replace('5173', '5001')}${fileUrl}`;
-    return `https://docs.google.com/viewer?url=${encodeURIComponent(absoluteUrl)}&embedded=true`;
+    const absoluteUrl = `${API_BASE}${fileUrl}`;
+    return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(absoluteUrl)}`;
   };
 
   if (loading) return <div className="loader-container"><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="loader" /></div>;
