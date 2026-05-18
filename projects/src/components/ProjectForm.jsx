@@ -39,7 +39,7 @@ const ProjectForm = ({ onProjectAdded, lang, onClose }) => {
     });
 
     try {
-      await axios.post('http://localhost:5001/api/projects', data, {
+      await axios.post('https://projects-back.siradzu.com/api/projects', data, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
         }
@@ -68,14 +68,14 @@ const ProjectForm = ({ onProjectAdded, lang, onClose }) => {
         <div className="form-section">
           <label className="form-label">{l.name} (AZ)</label>
           <input className="form-control" type="text" name="name_az" value={formData.name_az} onChange={handleInputChange} required />
-          
+
           <label className="form-label" style={{ marginTop: '1rem' }}>{l.desc} (AZ)</label>
           <textarea className="form-control" name="desc_az" rows="4" value={formData.desc_az} onChange={handleInputChange} required />
         </div>
         <div className="form-section">
           <label className="form-label">{l.name} (EN)</label>
           <input className="form-control" type="text" name="name_en" value={formData.name_en} onChange={handleInputChange} required />
-          
+
           <label className="form-label" style={{ marginTop: '1rem' }}>{l.desc} (EN)</label>
           <textarea className="form-control" name="desc_en" rows="4" value={formData.desc_en} onChange={handleInputChange} required />
         </div>

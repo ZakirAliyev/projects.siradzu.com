@@ -4,7 +4,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, Presentation, Globe, ArrowLeft, Download, Eye, Layers, Share2, Calendar } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5001';
+const API_BASE = 'https://projects-back.siradzu.com';
 
 const PublicProjectPage = () => {
   const { slug } = useParams();
@@ -64,7 +64,7 @@ const PublicProjectPage = () => {
               <div className="badge">{lang === 'az' ? 'Layihə Təfərrüatı' : 'Project Details'}</div>
               <h1>{project.name[lang]}</h1>
               <p>{project.description[lang]}</p>
-              
+
               <div className="meta-info">
                 <Calendar size={14} />
                 <span>{new Date(project.createdAt).toLocaleDateString()}</span>
@@ -96,9 +96,9 @@ const PublicProjectPage = () => {
                     <button className="action-link view" onClick={() => setPreviewFile(item.file)}>
                       <Eye size={14} /> {lang === 'az' ? 'Bax' : 'View'}
                     </button>
-                    <a 
-                      href={`${API_BASE}${item.file}`} 
-                      className="action-link download" 
+                    <a
+                      href={`${API_BASE}${item.file}`}
+                      className="action-link download"
                       download={`${project.name[lang]}-${item.label.replace(/\s+/g, '-')}.docx`}
                     >
                       <Download size={14} /> {lang === 'az' ? 'Yüklə' : 'Download'}

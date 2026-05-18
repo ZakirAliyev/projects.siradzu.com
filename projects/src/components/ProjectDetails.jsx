@@ -1,7 +1,7 @@
 import React from 'react';
 import { FileText, Presentation, Calendar } from 'lucide-react';
 
-const API_BASE = 'http://localhost:5001';
+const API_BASE = 'https://projects-back.siradzu.com';
 
 const ProjectDetails = ({ project, lang }) => {
   if (!project) return null;
@@ -17,9 +17,9 @@ const ProjectDetails = ({ project, lang }) => {
     <div className="fade-in">
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '2rem' }}>
         <div>
-          <img 
-            src={`${API_BASE}${project.cardImage}`} 
-            alt={project.name[lang]} 
+          <img
+            src={`${API_BASE}${project.cardImage}`}
+            alt={project.name[lang]}
             style={{ width: '100%', borderRadius: '16px', border: '1px solid var(--border)' }}
           />
           <div style={{ marginTop: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem', color: 'var(--text-muted)' }}>
@@ -27,7 +27,7 @@ const ProjectDetails = ({ project, lang }) => {
             <span>{l.created}: {new Date(project.createdAt).toLocaleDateString()}</span>
           </div>
         </div>
-        
+
         <div>
           <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem' }}>{project.name[lang]}</h3>
           <p style={{ color: 'var(--text-muted)', lineHeight: '1.8', marginBottom: '2rem' }}>

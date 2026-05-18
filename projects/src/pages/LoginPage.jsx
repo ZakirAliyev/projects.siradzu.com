@@ -14,7 +14,7 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('http://localhost:5001/api/login', { email, password });
+      const res = await axios.post('https://projects-back.siradzu.com/api/login', { email, password });
       localStorage.setItem('adminToken', res.data.token);
       toast.success('Xoş gəldiniz!');
       setTimeout(() => navigate('/admin'), 1000);
@@ -40,23 +40,23 @@ const LoginPage = () => {
         <form onSubmit={handleLogin}>
           <div className="form-group">
             <label><Mail size={16} /> Email</label>
-            <input 
-              type="email" 
-              placeholder="admin@texnocode.com" 
+            <input
+              type="email"
+              placeholder="admin@texnocode.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              required 
+              required
             />
           </div>
 
           <div className="form-group">
             <label><Lock size={16} /> Şifrə</label>
-            <input 
-              type="password" 
-              placeholder="••••••••" 
+            <input
+              type="password"
+              placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              required 
+              required
             />
           </div>
 

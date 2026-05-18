@@ -56,7 +56,7 @@ const ProjectsPage = () => {
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('http://localhost:5001/api/projects');
+      const res = await axios.get('https://projects-back.siradzu.com/api/projects');
       setProjects(res.data);
       setHasOrderChanged(false);
     } catch (err) {
@@ -69,7 +69,7 @@ const ProjectsPage = () => {
   const saveOrder = async (reorderedProjects) => {
     const listToSave = reorderedProjects || projects;
     try {
-      await axios.put('http://localhost:5001/api/projects/reorder', {
+      await axios.put('https://projects-back.siradzu.com/api/projects/reorder', {
         projectIds: listToSave.map(p => p.id)
       }, getHeaders());
       toast.success(t.orderSaved);
@@ -87,7 +87,7 @@ const ProjectsPage = () => {
   const handleDelete = async (id) => {
     if (window.confirm(t.confirmDelete)) {
       try {
-        await axios.delete(`http://localhost:5001/api/projects/${id}`, getHeaders());
+        await axios.delete(`https://projects-back.siradzu.com/api/projects/${id}`, getHeaders());
         toast.success(t.deleteSuccess);
         fetchProjects();
       } catch (err) {
@@ -103,7 +103,7 @@ const ProjectsPage = () => {
   return (
     <div className="admin-layout">
       <Toaster position="top-right" />
-      
+
       <Sidebar lang={lang} setLang={setLang} translations={t} />
 
       <main className="main-content">
@@ -138,10 +138,10 @@ const ProjectsPage = () => {
         ) : viewMode === 'grid' ? (
           <div className="project-grid">
             {projects.map((project, index) => (
-              <ProjectCard 
+              <ProjectCard
                 key={project.id}
-                project={project} 
-                lang={lang} 
+                project={project}
+                lang={lang}
                 onDelete={handleDelete}
                 onView={() => setSelectedProject(project)}
               />
@@ -161,7 +161,7 @@ const ProjectsPage = () => {
                 <Reorder.Item key={project.id} value={project} style={{ listStyle: 'none' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '50px 80px 1fr 1fr 150px', alignItems: 'center', padding: '1rem 1.5rem', background: 'var(--sidebar-bg)', borderBottom: '1px solid var(--border)', cursor: 'grab' }}>
                     <div style={{ color: 'var(--text-muted)' }}><GripVertical size={20} /></div>
-                    <img src={`http://localhost:5001${project.cardImage}`} style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }} />
+                    <img src={`https://projects-back.siradzu.com${project.cardImage}`} style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }} />
                     <div style={{ fontWeight: '600' }}>{project.name[lang]}</div>
                     <div style={{ color: 'var(--primary)', fontSize: '0.9rem' }}>/{project.slug}</div>
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
