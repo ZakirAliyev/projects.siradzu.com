@@ -64,9 +64,17 @@ jobs:
 
             npm install
 
-            pm2 restart projects-back || pm2 start index.js --name projects-back
+            # Change proxy port in Nginx for projects-back.siradzu.com
+            CONFIG_FILE=$(grep -l "projects-back.siradzu.com" /etc/nginx/sites-enabled/* | head -n 1)
+            if [ -n "$CONFIG_FILE" ]; then
+                echo "Modifying Nginx config: $CONFIG_FILE"
+                sed -i 's/proxy_pass http:\/\/localhost:5001/proxy_pass http:\/\/localhost:5005/g' "$CONFIG_FILE"
+                systemctl restart nginx
+            fi
 
-            systemctl restart nginx
+            # Delete existing PM2 to ensure new port default is picked up
+            pm2 delete projects-back || true
+            pm2 start index.js --name projects-back
 
             mkdir -p /var/www/projects-front/projects/dist
             mkdir -p /var/www/projects-front
@@ -81,9 +89,9 @@ jobs:
               echo "=== PM2 LOGS ==="
               pm2 logs projects-back --lines 100 --err --out --raw --nostream || true
               echo "=== LOCAL CURL PROJECTS ==="
-              curl -i http://localhost:5001/api/projects || true
+              curl -i http://localhost:5005/api/projects || true
               echo "=== LOCAL CURL LOGIN ==="
-              curl -i -X POST -H "Content-Type: application/json" -d '{"email":"admin@texnocode.com","password":"Admin123!"}' http://localhost:5001/api/login || true
+              curl -i -X POST -H "Content-Type: application/json" -d '{"email":"admin@texnocode.com","password":"Admin123!"}' http://localhost:5005/api/login || true
               echo "=== NGINX CONFIG ==="
               cat /etc/nginx/sites-enabled/* || true
             } > /var/www/projects-front/nginx-debug.txt
