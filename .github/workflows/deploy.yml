@@ -67,3 +67,12 @@ jobs:
             pm2 restart projects-back || pm2 start index.js --name projects-back
 
             systemctl restart nginx
+
+            echo "=== PM2 STATUS ==="
+            pm2 status
+            echo "=== PM2 SHOW ==="
+            pm2 show projects-back || true
+            echo "=== LOCAL CURL ==="
+            curl -i http://localhost:5001/api/projects || true
+            echo "=== NGINX CONFIG ==="
+            cat /etc/nginx/sites-enabled/* || true
