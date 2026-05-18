@@ -31,7 +31,7 @@ const authenticateToken = (req, res, next) => {
 };
 
 // Login Route
-app.post('/api/login', (req, res) => {
+app.post(['/api/login', '/login'], (req, res) => {
     const { email, password } = req.body;
     
     // Hardcoded credentials as requested
@@ -44,14 +44,14 @@ app.post('/api/login', (req, res) => {
 });
 
 // Get all projects (Public)
-app.get('/api/projects', (req, res) => {
+app.get(['/api/projects', '/projects'], (req, res) => {
     const projects = readProjects();
     const sorted = projects.sort((a, b) => (a.order || 0) - (b.order || 0));
     res.json(sorted);
 });
 
 // Get single project by slug (Public)
-app.get('/api/projects/:slug', (req, res) => {
+app.get(['/api/projects/:slug', '/projects/:slug'], (req, res) => {
     const { slug } = req.params;
     const projects = readProjects();
     const project = projects.find(p => p.slug === slug);
@@ -60,7 +60,7 @@ app.get('/api/projects/:slug', (req, res) => {
 });
 
 // Protected Routes below
-app.post('/api/projects', authenticateToken, (req, res) => {
+app.post(['/api/projects', '/projects'], authenticateToken, (req, res) => {
     upload(req, res, (err) => {
         if (err) return res.status(500).json({ error: err.message });
         const { name_az, name_en, desc_az, desc_en } = req.body;
@@ -98,7 +98,7 @@ app.post('/api/projects', authenticateToken, (req, res) => {
     });
 });
 
-app.put('/api/projects/reorder', authenticateToken, (req, res) => {
+app.put(['/api/projects/reorder', '/projects/reorder'], authenticateToken, (req, res) => {
     const { projectIds } = req.body;
     if (!Array.isArray(projectIds)) return res.status(400).json({ error: 'Invalid data' });
     const projects = readProjects();
@@ -110,7 +110,7 @@ app.put('/api/projects/reorder', authenticateToken, (req, res) => {
     res.json({ message: 'Order updated' });
 });
 
-app.delete('/api/projects/:id', authenticateToken, (req, res) => {
+app.delete(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) => {
     const { id } = req.params;
     let projects = readProjects();
     projects = projects.filter(p => p.id !== id);
