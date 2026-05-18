@@ -1,6 +1,7 @@
 import React from 'react';
 import { Navigate } from 'react-router-dom';
 import MainPage from "../pages/UserPages/index.jsx";
+import LandingPage from "../pages/LandingPage.jsx";
 import ProjectsPage from "../pages/ProjectsPage.jsx";
 import PublicProjectPage from "../pages/PublicProjectPage.jsx";
 import LoginPage from "../pages/LoginPage.jsx";
@@ -19,6 +20,10 @@ export const ROUTES = [
         path: '/',
         element: <MainPage/>,
         children: [
+            {
+                index: true,
+                element: <LandingPage/>
+            },
             {
                 path: 'admin',
                 element: <ProtectedRoute><ProjectsPage/></ProtectedRoute>,
