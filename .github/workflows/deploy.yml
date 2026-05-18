@@ -76,6 +76,9 @@ jobs:
             pm2 delete projects-back || true
             pm2 start index.js --name projects-back
 
+            # Sleep 3 seconds to let backend initialize/crash if there's any error
+            sleep 3
+
             mkdir -p /var/www/projects-front/projects/dist
             mkdir -p /var/www/projects-front
 
@@ -86,8 +89,10 @@ jobs:
               pm2 status
               echo "=== PM2 SHOW ==="
               pm2 show projects-back || true
-              echo "=== PM2 LOGS ==="
-              pm2 logs projects-back --lines 100 --err --out --raw --nostream || true
+              echo "=== ACTUAL PM2 ERROR LOG ==="
+              cat /root/.pm2/logs/projects-back-error.log || true
+              echo "=== ACTUAL PM2 OUT LOG ==="
+              cat /root/.pm2/logs/projects-back-out.log || true
               echo "=== LOCAL CURL PROJECTS ==="
               curl -i http://localhost:5005/api/projects || true
               echo "=== LOCAL CURL LOGIN ==="
