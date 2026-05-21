@@ -111,6 +111,70 @@ app.put(['/api/projects/reorder', '/projects/reorder'], authenticateToken, (req,
     res.json({ message: 'Order updated' });
 });
 
+app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) => {
+    upload(req, res, (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        const { id } = req.params;
+        const { name_az, name_en, desc_az, desc_en, delete_word_az, delete_word_en, delete_ppt_az, delete_ppt_en } = req.body;
+        const files = req.files || {};
+
+        const projects = readProjects();
+        const projectIndex = projects.findIndex(p => p.id === id);
+        if (projectIndex === -1) {
+            return res.status(404).json({ error: 'Project not found' });
+        }
+
+        const project = projects[projectIndex];
+
+        if (name_az !== undefined) project.name.az = name_az;
+        
+        if (name_en !== undefined && name_en !== project.name.en) {
+            project.name.en = name_en;
+            let slug = slugify(name_en, { lower: true, strict: true });
+            let originalSlug = slug;
+            let counter = 1;
+            while (projects.some(p => p.slug === slug && p.id !== id)) {
+                slug = `${originalSlug}-${counter}`;
+                counter++;
+            }
+            project.slug = slug;
+        }
+
+        if (desc_az !== undefined) project.description.az = desc_az;
+        if (desc_en !== undefined) project.description.en = desc_en;
+
+        if (files['cardImage']) {
+            project.cardImage = `/uploads/${files['cardImage'][0].filename}`;
+        }
+
+        if (delete_word_az === 'true') project.files.word_az = null;
+        else if (files['word_az']) {
+            project.files.word_az = `/uploads/${files['word_az'][0].filename}`;
+        }
+
+        if (delete_word_en === 'true') project.files.word_en = null;
+        else if (files['word_en']) {
+            project.files.word_en = `/uploads/${files['word_en'][0].filename}`;
+        }
+
+        if (delete_ppt_az === 'true') project.files.ppt_az = null;
+        else if (files['ppt_az']) {
+            project.files.ppt_az = `/uploads/${files['ppt_az'][0].filename}`;
+        }
+
+        if (delete_ppt_en === 'true') project.files.ppt_en = null;
+        else if (files['ppt_en']) {
+            project.files.ppt_en = `/uploads/${files['ppt_en'][0].filename}`;
+        }
+
+        project.updatedAt = new Date().toISOString();
+
+        projects[projectIndex] = project;
+        writeProjects(projects);
+        res.json(project);
+    });
+});
+
 app.delete(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) => {
     const { id } = req.params;
     let projects = readProjects();
