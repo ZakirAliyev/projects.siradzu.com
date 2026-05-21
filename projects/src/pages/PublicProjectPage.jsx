@@ -4,7 +4,7 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, Presentation, Globe, ArrowLeft, Download, Eye, Layers, Share2, Calendar } from 'lucide-react';
 
-const API_BASE = 'https://projects-back.siradzu.com';
+import { API_BASE } from '../config';
 
 const PublicProjectPage = () => {
   const { slug } = useParams();

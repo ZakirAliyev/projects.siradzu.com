@@ -1,9 +1,9 @@
 import React from 'react';
-import { FileText, Presentation, Trash2, ExternalLink } from 'lucide-react';
+import { FileText, Presentation, Trash2, ExternalLink, Pencil } from 'lucide-react';
 
-const API_BASE = 'https://projects-back.siradzu.com';
+import { API_BASE } from '../config';
 
-const ProjectCard = ({ project, lang, onDelete, onView }) => {
+const ProjectCard = ({ project, lang, onDelete, onView, onEdit }) => {
   const detailsText = lang === 'az' ? 'Detallar' : 'Details';
 
   return (
@@ -30,7 +30,7 @@ const ProjectCard = ({ project, lang, onDelete, onView }) => {
           )}
         </div>
 
-        <div className="card-actions">
+        <div className="card-actions" style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem' }}>
           <button
             className="btn btn-primary"
             style={{ flex: 1 }}
@@ -40,8 +40,17 @@ const ProjectCard = ({ project, lang, onDelete, onView }) => {
           </button>
           <button
             className="btn btn-outline"
+            style={{ color: '#3b82f6', borderColor: 'rgba(59, 130, 246, 0.2)' }}
+            onClick={onEdit}
+            title={lang === 'az' ? 'Redaktə et' : 'Edit'}
+          >
+            <Pencil size={16} />
+          </button>
+          <button
+            className="btn btn-outline"
             style={{ color: '#ef4444', borderColor: '#ef44441a' }}
             onClick={() => onDelete(project.id)}
+            title={lang === 'az' ? 'Sil' : 'Delete'}
           >
             <Trash2 size={16} />
           </button>

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
 import { Layers, Mail, Lock, ArrowRight } from 'lucide-react';
+import { API_BASE } from '../config';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
@@ -14,7 +15,7 @@ const LoginPage = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post('https://projects-back.siradzu.com/api/login', { email, password });
+      const res = await axios.post(`${API_BASE}/api/login`, { email, password });
       localStorage.setItem('adminToken', res.data.token);
       toast.success('Xoş gəldiniz!');
       setTimeout(() => navigate('/admin'), 1000);

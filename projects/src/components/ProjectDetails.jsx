@@ -1,7 +1,7 @@
 import React from 'react';
 import { FileText, Presentation, Calendar } from 'lucide-react';
 
-const API_BASE = 'https://projects-back.siradzu.com';
+import { API_BASE } from '../config';
 
 const ProjectDetails = ({ project, lang }) => {
   if (!project) return null;

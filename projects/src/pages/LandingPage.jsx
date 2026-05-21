@@ -7,7 +7,7 @@ import {
   Share2, ArrowRight, X, Calendar, Lock, ExternalLink, Copy, Check 
 } from 'lucide-react';
 
-const API_BASE = 'https://projects-back.siradzu.com';
+import { API_BASE } from '../config';
 
 const LandingPage = () => {
   const [projects, setProjects] = useState([]);

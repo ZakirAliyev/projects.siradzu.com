@@ -7,13 +7,15 @@ import ProjectCard from '../components/ProjectCard';
 import ProjectForm from '../components/ProjectForm';
 import ProjectDetails from '../components/ProjectDetails';
 import Modal from '../components/Modal';
-import { Plus, LayoutGrid, List, Save, GripVertical, Trash2, ExternalLink } from 'lucide-react';
+import { Plus, LayoutGrid, List, Save, GripVertical, Trash2, ExternalLink, Pencil } from 'lucide-react';
+import { API_BASE } from '../config';
 
 const translations = {
   az: {
     projects: 'Layihələr',
     newProject: 'Yeni Layihə',
     createTitle: 'Yeni Layihə Yaradın',
+    editTitle: 'Layihəni Redaktə Et',
     noProjects: 'Layihə tapılmadı.',
     saveOrder: 'Sıranı Yadda Saxla',
     orderSaved: 'Sıralama yadda saxlanıldı',
@@ -27,6 +29,7 @@ const translations = {
     projects: 'Projects',
     newProject: 'New Project',
     createTitle: 'Create New Project',
+    editTitle: 'Edit Project',
     noProjects: 'No projects found.',
     saveOrder: 'Save Order',
     orderSaved: 'Order updated successfully',
@@ -44,6 +47,7 @@ const ProjectsPage = () => {
   const [lang, setLang] = useState('az');
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedProject, setSelectedProject] = useState(null);
+  const [editingProject, setEditingProject] = useState(null);
   const [loading, setLoading] = useState(true);
   const [hasOrderChanged, setHasOrderChanged] = useState(false);
 
@@ -56,7 +60,7 @@ const ProjectsPage = () => {
   const fetchProjects = async () => {
     setLoading(true);
     try {
-      const res = await axios.get('https://projects-back.siradzu.com/api/projects');
+      const res = await axios.get(`${API_BASE}/api/projects`);
       setProjects(res.data);
       setHasOrderChanged(false);
     } catch (err) {
@@ -69,7 +73,7 @@ const ProjectsPage = () => {
   const saveOrder = async (reorderedProjects) => {
     const listToSave = reorderedProjects || projects;
     try {
-      await axios.put('https://projects-back.siradzu.com/api/projects/reorder', {
+      await axios.put(`${API_BASE}/api/projects/reorder`, {
         projectIds: listToSave.map(p => p.id)
       }, getHeaders());
       toast.success(t.orderSaved);
@@ -87,7 +91,7 @@ const ProjectsPage = () => {
   const handleDelete = async (id) => {
     if (window.confirm(t.confirmDelete)) {
       try {
-        await axios.delete(`https://projects-back.siradzu.com/api/projects/${id}`, getHeaders());
+        await axios.delete(`${API_BASE}/api/projects/${id}`, getHeaders());
         toast.success(t.deleteSuccess);
         fetchProjects();
       } catch (err) {
@@ -144,6 +148,7 @@ const ProjectsPage = () => {
                 lang={lang}
                 onDelete={handleDelete}
                 onView={() => setSelectedProject(project)}
+                onEdit={() => setEditingProject(project)}
               />
             ))}
           </div>
@@ -161,12 +166,15 @@ const ProjectsPage = () => {
                 <Reorder.Item key={project.id} value={project} style={{ listStyle: 'none' }}>
                   <div style={{ display: 'grid', gridTemplateColumns: '50px 80px 1fr 1fr 150px', alignItems: 'center', padding: '1rem 1.5rem', background: 'var(--sidebar-bg)', borderBottom: '1px solid var(--border)', cursor: 'grab' }}>
                     <div style={{ color: 'var(--text-muted)' }}><GripVertical size={20} /></div>
-                    <img src={`https://projects-back.siradzu.com${project.cardImage}`} style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }} />
+                    <img src={`${API_BASE}${project.cardImage}`} style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }} />
                     <div style={{ fontWeight: '600' }}>{project.name[lang]}</div>
                     <div style={{ color: 'var(--primary)', fontSize: '0.9rem' }}>/{project.slug}</div>
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                       <button className="btn btn-outline" style={{ padding: '0.4rem' }} onClick={() => setSelectedProject(project)}>
                         <ExternalLink size={16} />
+                      </button>
+                      <button className="btn btn-outline" style={{ padding: '0.4rem', color: 'var(--primary)' }} onClick={() => setEditingProject(project)}>
+                        <Pencil size={16} />
                       </button>
                       <button className="btn btn-outline" style={{ padding: '0.4rem', color: '#ef4444' }} onClick={() => handleDelete(project.id)}>
                         <Trash2 size={16} />
@@ -193,6 +201,15 @@ const ProjectsPage = () => {
 
       <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} title={t.createTitle}>
         <ProjectForm lang={lang} onProjectAdded={fetchProjects} onClose={() => setIsModalOpen(false)} />
+      </Modal>
+
+      <Modal isOpen={!!editingProject} onClose={() => setEditingProject(null)} title={t.editTitle}>
+        <ProjectForm
+          lang={lang}
+          projectToEdit={editingProject}
+          onProjectAdded={fetchProjects}
+          onClose={() => setEditingProject(null)}
+        />
       </Modal>
 
       <Modal isOpen={!!selectedProject} onClose={() => setSelectedProject(null)} title={selectedProject?.name[lang]}>
