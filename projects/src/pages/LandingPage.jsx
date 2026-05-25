@@ -79,7 +79,8 @@ const LandingPage = () => {
       close: "Bağla",
       createdAt: "Yaradılma tarixi",
       resources: "Mövcud Resurslar",
-      resourcesDesc: "Aşağıdakı sənədlərə onlayn baxa və ya onları cihazınıza yükləyə bilərsiniz."
+      resourcesDesc: "Aşağıdakı sənədlərə onlayn baxa və ya onları cihazınıza yükləyə bilərsiniz.",
+      visitWebsite: "Vebsaytı Ziyarət Et"
     },
     en: {
       heroTitle: "Digital Projects Portal",
@@ -97,7 +98,8 @@ const LandingPage = () => {
       close: "Close",
       createdAt: "Created Date",
       resources: "Available Resources",
-      resourcesDesc: "You can preview the documents online or download them directly to your device."
+      resourcesDesc: "You can preview the documents online or download them directly to your device.",
+      visitWebsite: "Visit Website"
     }
   };
 
@@ -241,6 +243,9 @@ const LandingPage = () => {
 
                   <div className="card-footer">
                     <div className="resource-indicators">
+                      {project.website ? (
+                        <span className="indicator-badge web" title="Website Available">WEB</span>
+                      ) : null}
                       {project.files.word_az || project.files.word_en ? (
                         <span className="indicator-badge doc" title="Word Document Available">DOC</span>
                       ) : null}
@@ -318,6 +323,21 @@ const LandingPage = () => {
                       })}
                     </span>
                   </div>
+
+                  {selectedProject.website && (
+                    <div className="drawer-website-container">
+                      <a 
+                        href={selectedProject.website} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="drawer-website-btn"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <Globe size={14} />
+                        <span>{t.visitWebsite}</span>
+                      </a>
+                    </div>
+                  )}
                   
                   <p className="drawer-description">{selectedProject.description[lang]}</p>
                 </div>
@@ -925,6 +945,33 @@ const LandingPage = () => {
         .indicator-badge.ppt {
           background: rgba(239, 68, 68, 0.08);
           color: #dc2626;
+        }
+
+        .indicator-badge.web {
+          background: rgba(16, 185, 129, 0.08);
+          color: #10b981;
+        }
+
+        .drawer-website-container {
+          margin-bottom: 1.25rem;
+        }
+
+        .drawer-website-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: 8px;
+          background: #3b82f6;
+          color: #ffffff;
+          padding: 8px 16px;
+          border-radius: 8px;
+          font-size: 0.85rem;
+          font-weight: 700;
+          text-decoration: none;
+          transition: background-color 0.2s, opacity 0.2s;
+        }
+
+        .drawer-website-btn:hover {
+          opacity: 0.9;
         }
 
         .learn-more {

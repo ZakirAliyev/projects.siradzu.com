@@ -11,6 +11,7 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit }) => {
     name_en: projectToEdit ? projectToEdit.name.en : '',
     desc_az: projectToEdit ? projectToEdit.description.az : '',
     desc_en: projectToEdit ? projectToEdit.description.en : '',
+    website: projectToEdit ? (projectToEdit.website || '') : '',
   });
   const [files, setFiles] = useState({
     cardImage: null,
@@ -83,8 +84,8 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit }) => {
   };
 
   const labels = {
-    az: { name: 'Ad', desc: 'Təsvir', cardImg: 'Kard Şəkli', word: 'Word Sənədi', ppt: 'PPT Sənədi', submit: 'Yarat', submitEdit: 'Yadda Saxla' },
-    en: { name: 'Name', desc: 'Description', cardImg: 'Card Image', word: 'Word Doc', ppt: 'PPT Doc', submit: 'Create', submitEdit: 'Save Changes' }
+    az: { name: 'Ad', desc: 'Təsvir', cardImg: 'Kard Şəkli', word: 'Word Sənədi', ppt: 'PPT Sənədi', website: 'Vebsayt Linki (Opsional)', submit: 'Yarat', submitEdit: 'Yadda Saxla' },
+    en: { name: 'Name', desc: 'Description', cardImg: 'Card Image', word: 'Word Doc', ppt: 'PPT Doc', website: 'Website Link (Optional)', submit: 'Create', submitEdit: 'Save Changes' }
   };
 
   const l = labels[lang];
@@ -106,6 +107,18 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit }) => {
           <label className="form-label" style={{ marginTop: '1rem' }}>{l.desc} (EN)</label>
           <textarea className="form-control" name="desc_en" rows="4" value={formData.desc_en} onChange={handleInputChange} required />
         </div>
+      </div>
+
+      <div style={{ marginTop: '1.2rem' }}>
+        <label className="form-label">{l.website}</label>
+        <input 
+          className="form-control" 
+          type="url" 
+          name="website" 
+          placeholder="https://example.com" 
+          value={formData.website} 
+          onChange={handleInputChange} 
+        />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginTop: '1.5rem' }}>

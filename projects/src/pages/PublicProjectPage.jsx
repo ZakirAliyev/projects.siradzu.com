@@ -79,6 +79,21 @@ const PublicProjectPage = () => {
               <h1>{project.name[lang]}</h1>
               <p>{project.description[lang]}</p>
 
+              {project.website && (
+                <div style={{ marginBottom: '1.5rem' }}>
+                  <a 
+                    href={project.website} 
+                    target="_blank" 
+                    rel="noopener noreferrer" 
+                    className="action-link download"
+                    style={{ display: 'inline-flex', width: 'auto', padding: '10px 20px', fontSize: '0.85rem', alignValues: 'center' }}
+                  >
+                    <Globe size={16} />
+                    <span>{lang === 'az' ? 'Vebsaytı Ziyarət Et' : 'Visit Website'}</span>
+                  </a>
+                </div>
+              )}
+
               <div className="meta-info">
                 <Calendar size={14} />
                 <span>{new Date(project.createdAt).toLocaleDateString()}</span>

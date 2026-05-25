@@ -64,7 +64,7 @@ app.get(['/api/projects/:slug', '/projects/:slug'], (req, res) => {
 app.post(['/api/projects', '/projects'], authenticateToken, (req, res) => {
     upload(req, res, (err) => {
         if (err) return res.status(500).json({ error: err.message });
-        const { name_az, name_en, desc_az, desc_en } = req.body;
+        const { name_az, name_en, desc_az, desc_en, website } = req.body;
         const files = req.files;
         if (!files || !files['cardImage']) return res.status(400).json({ error: 'Card image is required' });
 
@@ -83,6 +83,7 @@ app.post(['/api/projects', '/projects'], authenticateToken, (req, res) => {
             order: projects.length,
             name: { az: name_az, en: name_en },
             description: { az: desc_az, en: desc_en },
+            website: website || '',
             cardImage: `/uploads/${files['cardImage'][0].filename}`,
             files: {
                 word_az: files['word_az'] ? `/uploads/${files['word_az'][0].filename}` : null,
@@ -115,7 +116,7 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
     upload(req, res, (err) => {
         if (err) return res.status(500).json({ error: err.message });
         const { id } = req.params;
-        const { name_az, name_en, desc_az, desc_en, delete_word_az, delete_word_en, delete_ppt_az, delete_ppt_en } = req.body;
+        const { name_az, name_en, desc_az, desc_en, website, delete_word_az, delete_word_en, delete_ppt_az, delete_ppt_en } = req.body;
         const files = req.files || {};
 
         const projects = readProjects();
@@ -127,6 +128,7 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
         const project = projects[projectIndex];
 
         if (name_az !== undefined) project.name.az = name_az;
+        if (website !== undefined) project.website = website;
         
         if (name_en !== undefined && name_en !== project.name.en) {
             project.name.en = name_en;

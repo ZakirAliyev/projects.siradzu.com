@@ -1,5 +1,4 @@
-import React from 'react';
-import { FileText, Presentation, Calendar } from 'lucide-react';
+import { FileText, Presentation, Calendar, Globe } from 'lucide-react';
 
 import { API_BASE } from '../config';
 
@@ -29,7 +28,22 @@ const ProjectDetails = ({ project, lang }) => {
         </div>
 
         <div>
-          <h3 style={{ fontSize: '1.4rem', marginBottom: '1rem' }}>{project.name[lang]}</h3>
+          <h3 style={{ fontSize: '1.4rem', marginBottom: '0.5rem' }}>{project.name[lang]}</h3>
+          
+          {project.website && (
+            <div style={{ marginBottom: '1.5rem' }}>
+              <a 
+                href={project.website} 
+                className="btn btn-primary" 
+                target="_blank" 
+                rel="noreferrer" 
+                style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: '#3b82f6', color: '#fff', textDecoration: 'none', padding: '0.5rem 1rem', borderRadius: '8px', fontSize: '0.9rem', fontWeight: 'bold' }}
+              >
+                <Globe size={16} /> {lang === 'az' ? 'Vebsayta keçid' : 'Visit Website'}
+              </a>
+            </div>
+          )}
+
           <p style={{ color: 'var(--text-muted)', lineHeight: '1.8', marginBottom: '2rem' }}>
             {project.description[lang]}
           </p>
