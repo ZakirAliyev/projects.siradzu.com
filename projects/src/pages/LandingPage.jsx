@@ -4,13 +4,20 @@ import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Search, Layers, Globe, FileText, Presentation, Eye, Download, 
-  Share2, ArrowRight, X, Calendar, Lock, ExternalLink, Copy, Check 
+  Share2, ArrowRight, X, Calendar, Lock, ExternalLink, Copy, Check,
+  Sun, Moon
 } from 'lucide-react';
 
 import { API_BASE } from '../config';
+import logoImg from '../assets/logo.png';
 
 const LandingPage = () => {
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
   const [projects, setProjects] = useState([]);
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+  }, [theme]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [lang, setLang] = useState('az');
@@ -97,18 +104,24 @@ const LandingPage = () => {
   const t = translations[lang];
 
   return (
-    <div className="landing-page">
+    <div className={`landing-page ${theme === 'dark' ? 'dark-theme' : ''}`}>
       {/* Sleek Blurred Navigation */}
       <nav className="glass-nav">
         <div className="nav-content">
           <div className="brand">
-            <div className="brand-logo">
-              <Layers size={20} className="logo-icon" />
-            </div>
-            <span className="brand-name">SIRADZU</span>
+            <img src={logoImg} alt="SIRADZU" className="brand-logo-img" />
           </div>
 
           <div className="nav-actions">
+            {/* Theme Switcher */}
+            <button 
+              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              className="theme-toggle-btn"
+              title={lang === 'az' ? 'Mövzunu dəyiş' : 'Toggle theme'}
+            >
+              {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+
             {/* Language Switch */}
             <div className="lang-switcher">
               <button 
@@ -140,7 +153,7 @@ const LandingPage = () => {
           >
             <div className="hero-badge">
               <span className="pulse-dot"></span>
-              <span>Active Projects Arxiv</span>
+              <span>Siradzu Holding</span>
             </div>
             <h1>{t.heroTitle}</h1>
             <p>{t.heroSubtitle}</p>
@@ -415,15 +428,77 @@ const LandingPage = () => {
         )}
       </AnimatePresence>
 
-      {/* Global CSS Styling for Premium Aesthetics */}
+      {/* Page Footer */}
+      <footer className="page-footer">
+        <div className="footer-content">
+          <div className="footer-brand">
+            <img src={logoImg} alt="SIRADZU" className="brand-logo-img" />
+          </div>
+          <p className="footer-text">
+            {lang === 'az' 
+              ? '© 2026 SIRADZU. Bütün hüquqlar qorunur.' 
+              : '© 2026 SIRADZU. All rights reserved.'}
+          </p>
+        </div>
+      </footer>
+
       <style>{`
         .landing-page {
-          background: #09090b;
-          color: #f4f4f5;
+          --bg-page: #F7F7F7;
+          --bg-card: #FFFFFF;
+          --bg-nav: rgba(255, 255, 255, 0.85);
+          --text-main: #0A1029;
+          --text-muted: #9BA7B8;
+          --border-color: rgba(155, 167, 184, 0.15);
+          --logo-filter: none;
+          --switcher-bg: rgba(155, 167, 184, 0.1);
+          --switcher-btn-active: #FFFFFF;
+          --switcher-btn-active-text: #0A1029;
+          --admin-btn-bg: #0A1029;
+          --admin-btn-text: #FFFFFF;
+          --card-shadow: rgba(0,0,0,0.02);
+          --card-shadow-hover: rgba(0,0,0,0.05);
+          --radial-glow: rgba(10, 16, 41, 0.03);
+          --drawer-backdrop-bg: rgba(10, 16, 41, 0.4);
+          --drawer-file-bg: #F7F7F7;
+          --btn-preview-bg: #FFFFFF;
+          --btn-preview-border: rgba(155, 167, 184, 0.2);
+          --spinner-border: rgba(10, 16, 41, 0.05);
+          --empty-wrapper-bg: #F7F7F7;
+        }
+
+        .landing-page.dark-theme {
+          --bg-page: #0A1029;
+          --bg-card: #0d1430;
+          --bg-nav: rgba(10, 16, 41, 0.85);
+          --text-main: #FFFFFF;
+          --text-muted: #9BA7B8;
+          --border-color: rgba(155, 167, 184, 0.15);
+          --logo-filter: brightness(0) invert(1);
+          --switcher-bg: rgba(255, 255, 255, 0.03);
+          --switcher-btn-active: rgba(255, 255, 255, 0.08);
+          --switcher-btn-active-text: #FFFFFF;
+          --admin-btn-bg: #FFFFFF;
+          --admin-btn-text: #0A1029;
+          --card-shadow: rgba(0,0,0,0.2);
+          --card-shadow-hover: rgba(0,0,0,0.3);
+          --radial-glow: rgba(255, 255, 255, 0.03);
+          --drawer-backdrop-bg: rgba(9, 9, 11, 0.75);
+          --drawer-file-bg: rgba(255, 255, 255, 0.01);
+          --btn-preview-bg: rgba(255, 255, 255, 0.03);
+          --btn-preview-border: rgba(255, 255, 255, 0.06);
+          --spinner-border: rgba(255, 255, 255, 0.05);
+          --empty-wrapper-bg: rgba(255, 255, 255, 0.02);
+        }
+
+        .landing-page {
+          background: var(--bg-page);
+          color: var(--text-main);
           min-height: 100vh;
           font-family: 'Inter', system-ui, -apple-system, sans-serif;
           overflow-x: hidden;
-          padding-bottom: 5rem;
+          padding-bottom: 0;
+          transition: background-color 0.3s, color 0.3s;
         }
 
         /* Glass Nav */
@@ -431,9 +506,10 @@ const LandingPage = () => {
           position: fixed;
           top: 0; left: 0; right: 0;
           z-index: 1000;
-          background: rgba(9, 9, 11, 0.7);
+          background: var(--bg-nav);
           backdrop-filter: blur(16px);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          border-bottom: 1px solid var(--border-color);
+          transition: background-color 0.3s, border-color 0.3s;
         }
 
         .nav-content {
@@ -448,28 +524,14 @@ const LandingPage = () => {
         .brand {
           display: flex;
           align-items: center;
-          gap: 0.75rem;
         }
 
-        .brand-logo {
-          background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-          width: 32px; height: 32px;
-          border-radius: 8px;
-          display: flex; align-items: center; justify-content: center;
-          box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
-        }
-
-        .logo-icon {
-          color: #fff;
-        }
-
-        .brand-name {
-          font-weight: 800;
-          font-size: 1.25rem;
-          letter-spacing: -0.5px;
-          background: linear-gradient(to right, #fff, #a1a1aa);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+        .brand-logo-img {
+          height: 38px;
+          width: auto;
+          object-fit: contain;
+          filter: var(--logo-filter);
+          transition: filter 0.3s;
         }
 
         .nav-actions {
@@ -478,18 +540,37 @@ const LandingPage = () => {
           gap: 1rem;
         }
 
+        .theme-toggle-btn {
+          background: var(--switcher-bg);
+          border: 1px solid var(--border-color);
+          color: var(--text-main);
+          width: 36px;
+          height: 36px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .theme-toggle-btn:hover {
+          background: rgba(155, 167, 184, 0.2);
+        }
+
         .lang-switcher {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          background: var(--switcher-bg);
+          border: 1px solid var(--border-color);
           padding: 3px;
           border-radius: 8px;
           display: flex;
+          transition: background-color 0.3s, border-color 0.3s;
         }
 
         .lang-switcher button {
           background: transparent;
           border: none;
-          color: #71717a;
+          color: var(--text-muted);
           padding: 6px 12px;
           font-size: 0.8rem;
           font-weight: 700;
@@ -499,13 +580,14 @@ const LandingPage = () => {
         }
 
         .lang-switcher button.active {
-          background: rgba(255, 255, 255, 0.08);
-          color: #fff;
+          background: var(--switcher-btn-active);
+          color: var(--switcher-btn-active-text);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .admin-link-btn {
-          background: #fff;
-          color: #09090b;
+          background: var(--admin-btn-bg);
+          color: var(--admin-btn-text);
           text-decoration: none;
           padding: 0.5rem 1rem;
           border-radius: 8px;
@@ -527,7 +609,7 @@ const LandingPage = () => {
           position: relative;
           padding: 10rem 1.5rem 6rem;
           text-align: center;
-          background: radial-gradient(circle at top, rgba(37, 99, 235, 0.08) 0%, transparent 60%);
+          background: radial-gradient(circle at top, var(--radial-glow) 0%, transparent 60%);
           overflow: hidden;
         }
 
@@ -536,8 +618,8 @@ const LandingPage = () => {
           inset: 0;
           opacity: 0.03;
           background-size: 40px 40px;
-          background-image: linear-gradient(to right, #fff 1px, transparent 1px),
-                            linear-gradient(to bottom, #fff 1px, transparent 1px);
+          background-image: linear-gradient(to right, var(--text-main) 1px, transparent 1px),
+                            linear-gradient(to bottom, var(--text-main) 1px, transparent 1px);
           pointer-events: none;
         }
 
@@ -552,9 +634,9 @@ const LandingPage = () => {
           display: inline-flex;
           align-items: center;
           gap: 0.5rem;
-          background: rgba(37, 99, 235, 0.1);
-          border: 1px solid rgba(37, 99, 235, 0.2);
-          color: #60a5fa;
+          background: var(--switcher-bg);
+          border: 1px solid var(--border-color);
+          color: var(--text-main);
           padding: 6px 14px;
           border-radius: 20px;
           font-size: 0.75rem;
@@ -564,7 +646,7 @@ const LandingPage = () => {
 
         .pulse-dot {
           width: 6px; height: 6px;
-          background-color: #3b82f6;
+          background-color: var(--text-main);
           border-radius: 50%;
           display: inline-block;
           animation: pulse 1.8s infinite;
@@ -582,13 +664,11 @@ const LandingPage = () => {
           letter-spacing: -1.5px;
           line-height: 1.15;
           margin-bottom: 1.25rem;
-          background: linear-gradient(to bottom, #fff, #a1a1aa);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
+          color: var(--text-main);
         }
 
         .hero-section p {
-          color: #a1a1aa;
+          color: var(--text-muted);
           font-size: 1.1rem;
           line-height: 1.6;
           max-width: 650px;
@@ -600,23 +680,23 @@ const LandingPage = () => {
           max-width: 500px;
           margin: 0 auto;
           position: relative;
-          background: rgba(255, 255, 255, 0.02);
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
           border-radius: 12px;
           display: flex;
           align-items: center;
           padding: 0 1rem;
           transition: all 0.3s;
+          box-shadow: var(--card-shadow);
         }
 
         .search-container:focus-within {
-          border-color: rgba(37, 99, 235, 0.5);
-          box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.15);
-          background: rgba(255, 255, 255, 0.04);
+          border-color: var(--text-main);
+          box-shadow: 0 0 0 2px rgba(10, 16, 41, 0.05);
         }
 
         .search-icon {
-          color: #71717a;
+          color: var(--text-muted);
           margin-right: 0.75rem;
         }
 
@@ -625,19 +705,19 @@ const LandingPage = () => {
           background: transparent;
           border: none;
           outline: none;
-          color: #fff;
+          color: var(--text-main);
           font-size: 0.95rem;
           padding: 0.85rem 0;
         }
 
         .search-input::placeholder {
-          color: #71717a;
+          color: var(--text-muted);
         }
 
         .search-clear {
           background: transparent;
           border: none;
-          color: #71717a;
+          color: var(--text-muted);
           cursor: pointer;
           padding: 4px;
           display: flex;
@@ -647,8 +727,8 @@ const LandingPage = () => {
         }
 
         .search-clear:hover {
-          background: rgba(255, 255, 255, 0.05);
-          color: #fff;
+          background: rgba(155, 167, 184, 0.1);
+          color: var(--text-main);
         }
 
         /* Projects Section */
@@ -667,43 +747,43 @@ const LandingPage = () => {
 
         .custom-spinner {
           width: 32px; height: 32px;
-          border: 3px solid rgba(255, 255, 255, 0.05);
-          border-top-color: #3b82f6;
+          border: 3px solid var(--spinner-border);
+          border-top-color: var(--text-main);
           border-radius: 50%;
         }
 
         .empty-state {
           text-align: center;
           padding: 6rem 1.5rem;
-          background: rgba(255,255,255, 0.01);
-          border: 1px dashed rgba(255, 255, 255, 0.06);
+          background: var(--bg-card);
+          border: 1px dashed var(--border-color);
           border-radius: 16px;
           max-width: 400px;
           margin: 0 auto;
         }
 
         .empty-icon-wrapper {
-          background: rgba(255, 255, 255, 0.02);
+          background: var(--empty-wrapper-bg);
           width: 80px; height: 80px;
           border-radius: 50%;
           display: flex; align-items: center; justify-content: center;
           margin: 0 auto 1.5rem;
-          border: 1px solid rgba(255,255,255, 0.04);
+          border: 1px solid var(--border-color);
         }
 
         .empty-icon {
-          color: #52525b;
+          color: var(--text-muted);
         }
 
         .empty-state h3 {
           font-size: 1.1rem;
           font-weight: 600;
-          color: #e4e4e7;
+          color: var(--text-main);
           margin-bottom: 0.5rem;
         }
 
         .empty-state p {
-          color: #71717a;
+          color: var(--text-muted);
           font-size: 0.9rem;
         }
 
@@ -716,28 +796,28 @@ const LandingPage = () => {
 
         /* Project Card */
         .project-card {
-          background: rgba(255, 255, 255, 0.01);
-          border: 1px solid rgba(255, 255, 255, 0.04);
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
           border-radius: 16px;
           overflow: hidden;
           cursor: pointer;
           display: flex;
           flex-direction: column;
-          box-shadow: 0 4px 30px rgba(0,0,0,0.2);
-          transition: border-color 0.3s, background-color 0.3s;
+          box-shadow: var(--card-shadow);
+          transition: border-color 0.3s, box-shadow 0.3s, background-color 0.3s;
         }
 
         .project-card:hover {
-          border-color: rgba(255, 255, 255, 0.1);
-          background: rgba(255, 255, 255, 0.02);
+          border-color: rgba(155, 167, 184, 0.3);
+          box-shadow: var(--card-shadow-hover);
         }
 
         .card-image-wrapper {
           position: relative;
           aspect-ratio: 16 / 9;
           overflow: hidden;
-          background: rgba(255, 255, 255, 0.02);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+          background: var(--empty-wrapper-bg);
+          border-bottom: 1px solid var(--border-color);
         }
 
         .card-img {
@@ -747,14 +827,14 @@ const LandingPage = () => {
         }
 
         .project-card:hover .card-img {
-          transform: scale(1.05);
+          transform: scale(1.03);
         }
 
         .card-hover-overlay {
           position: absolute;
           inset: 0;
-          background: rgba(9, 9, 11, 0.4);
-          backdrop-filter: blur(4px);
+          background: rgba(10, 16, 41, 0.1);
+          backdrop-filter: blur(2px);
           opacity: 0;
           display: flex;
           align-items: center;
@@ -767,8 +847,8 @@ const LandingPage = () => {
         }
 
         .overlay-btn {
-          background: #fff;
-          color: #09090b;
+          background: var(--text-main);
+          color: var(--bg-page);
           padding: 8px 16px;
           border-radius: 20px;
           font-size: 0.8rem;
@@ -776,7 +856,7 @@ const LandingPage = () => {
           display: flex;
           align-items: center;
           gap: 6px;
-          box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+          box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         }
 
         .card-content {
@@ -791,7 +871,7 @@ const LandingPage = () => {
           align-items: center;
           gap: 4px;
           font-size: 0.75rem;
-          color: #71717a;
+          color: var(--text-muted);
           margin-bottom: 0.75rem;
         }
 
@@ -799,13 +879,13 @@ const LandingPage = () => {
           font-size: 1.2rem;
           font-weight: 700;
           margin-bottom: 0.75rem;
-          color: #fff;
+          color: var(--text-main);
           line-height: 1.4;
         }
 
         .card-desc {
           font-size: 0.9rem;
-          color: #a1a1aa;
+          color: var(--text-muted);
           line-height: 1.6;
           margin-bottom: 1.5rem;
           display: -webkit-box;
@@ -821,7 +901,7 @@ const LandingPage = () => {
           justify-content: space-between;
           align-items: center;
           padding-top: 1rem;
-          border-top: 1px solid rgba(255,255,255, 0.04);
+          border-top: 1px solid var(--border-color);
         }
 
         .resource-indicators {
@@ -838,19 +918,19 @@ const LandingPage = () => {
         }
 
         .indicator-badge.doc {
-          background: rgba(59, 130, 246, 0.1);
-          color: #60a5fa;
+          background: rgba(59, 130, 246, 0.08);
+          color: #2563eb;
         }
 
         .indicator-badge.ppt {
-          background: rgba(239, 68, 68, 0.1);
-          color: #f87171;
+          background: rgba(239, 68, 68, 0.08);
+          color: #dc2626;
         }
 
         .learn-more {
           font-size: 0.8rem;
           font-weight: 700;
-          color: #3b82f6;
+          color: var(--text-main);
           display: flex;
           align-items: center;
           gap: 4px;
@@ -858,15 +938,15 @@ const LandingPage = () => {
         }
 
         .project-card:hover .learn-more {
-          color: #60a5fa;
+          color: #2563eb;
           transform: translateX(3px);
         }
 
         /* Modern Slide-out Side Drawer */
         .drawer-backdrop {
           position: fixed; inset: 0; z-index: 2000;
-          background: rgba(9, 9, 11, 0.75);
-          backdrop-filter: blur(8px);
+          background: var(--drawer-backdrop-bg);
+          backdrop-filter: blur(4px);
         }
 
         .drawer-container {
@@ -875,35 +955,36 @@ const LandingPage = () => {
           width: 100%;
           max-width: 500px;
           z-index: 2001;
-          background: #09090b;
-          border-left: 1px solid rgba(255, 255, 255, 0.08);
-          box-shadow: -10px 0 40px rgba(0,0,0,0.5);
+          background: var(--bg-card);
+          border-left: 1px solid var(--border-color);
+          box-shadow: -10px 0 40px rgba(0,0,0,0.05);
           display: flex;
           flex-direction: column;
+          transition: background-color 0.3s, border-color 0.3s;
         }
 
         .drawer-header {
           padding: 1.25rem 1.5rem;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          border-bottom: 1px solid var(--border-color);
           display: flex;
           justify-content: space-between;
           align-items: center;
         }
 
         .drawer-badge {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.05);
+          background: var(--empty-wrapper-bg);
+          border: 1px solid var(--border-color);
           padding: 4px 10px;
           border-radius: 6px;
           font-size: 0.75rem;
           font-weight: 700;
-          color: #a1a1aa;
+          color: var(--text-muted);
         }
 
         .drawer-close-btn {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          color: #a1a1aa;
+          background: var(--empty-wrapper-bg);
+          border: 1px solid var(--border-color);
+          color: var(--text-muted);
           width: 36px; height: 36px;
           border-radius: 50%;
           display: flex; align-items: center; justify-content: center;
@@ -912,8 +993,8 @@ const LandingPage = () => {
         }
 
         .drawer-close-btn:hover {
-          background: rgba(255, 255, 255, 0.08);
-          color: #fff;
+          background: rgba(155, 167, 184, 0.1);
+          color: var(--text-main);
         }
 
         .drawer-body {
@@ -924,8 +1005,8 @@ const LandingPage = () => {
 
         .drawer-banner {
           aspect-ratio: 16 / 9;
-          background: rgba(255, 255, 255, 0.01);
-          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          background: var(--empty-wrapper-bg);
+          border-bottom: 1px solid var(--border-color);
           overflow: hidden;
         }
 
@@ -941,7 +1022,7 @@ const LandingPage = () => {
         .drawer-meta-section h2 {
           font-size: 1.5rem;
           font-weight: 800;
-          color: #fff;
+          color: var(--text-main);
           margin-bottom: 0.75rem;
           line-height: 1.3;
         }
@@ -950,13 +1031,13 @@ const LandingPage = () => {
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          color: #71717a;
+          color: var(--text-muted);
           font-size: 0.8rem;
           margin-bottom: 1.25rem;
         }
 
         .drawer-description {
-          color: #a1a1aa;
+          color: var(--text-muted);
           font-size: 0.95rem;
           line-height: 1.7;
         }
@@ -972,13 +1053,13 @@ const LandingPage = () => {
         .drawer-section-header h4 {
           font-size: 1rem;
           font-weight: 700;
-          color: #fff;
+          color: var(--text-main);
           margin-bottom: 0.25rem;
         }
 
         .drawer-section-header p {
           font-size: 0.8rem;
-          color: #71717a;
+          color: var(--text-muted);
         }
 
         .drawer-files-list {
@@ -988,8 +1069,8 @@ const LandingPage = () => {
         }
 
         .drawer-file-card {
-          background: rgba(255, 255, 255, 0.01);
-          border: 1px solid rgba(255, 255, 255, 0.04);
+          background: var(--drawer-file-bg);
+          border: 1px solid var(--border-color);
           padding: 1rem;
           border-radius: 12px;
           display: flex;
@@ -1004,13 +1085,13 @@ const LandingPage = () => {
         }
 
         .drawer-file-icon.word {
-          background: rgba(59, 130, 246, 0.1);
-          color: #60a5fa;
+          background: rgba(59, 130, 246, 0.08);
+          color: #2563eb;
         }
 
         .drawer-file-icon.ppt {
-          background: rgba(239, 68, 68, 0.1);
-          color: #f87171;
+          background: rgba(239, 68, 68, 0.08);
+          color: #dc2626;
         }
 
         .drawer-file-info {
@@ -1020,7 +1101,7 @@ const LandingPage = () => {
         .drawer-file-info h5 {
           font-size: 0.9rem;
           font-weight: 600;
-          color: #fff;
+          color: var(--text-main);
           margin-bottom: 0.6rem;
         }
 
@@ -1044,28 +1125,27 @@ const LandingPage = () => {
         }
 
         .drawer-action-btn.preview {
-          background: rgba(255, 255, 255, 0.03);
-          color: #e4e4e7;
-          border: 1px solid rgba(255, 255, 255, 0.06);
+          background: var(--btn-preview-bg);
+          color: var(--text-main);
+          border: 1px solid var(--btn-preview-border);
         }
 
         .drawer-action-btn.preview:hover {
-          background: rgba(255, 255, 255, 0.08);
-          color: #fff;
+          background: var(--empty-wrapper-bg);
         }
 
         .drawer-action-btn.download {
-          background: #3b82f6;
-          color: #fff;
+          background: var(--text-main);
+          color: var(--bg-page);
         }
 
         .drawer-action-btn.download:hover {
-          background: #2563eb;
+          opacity: 0.9;
         }
 
         .drawer-footer {
           padding: 1.25rem 1.5rem;
-          border-top: 1px solid rgba(255, 255, 255, 0.06);
+          border-top: 1px solid var(--border-color);
           display: grid;
           grid-template-columns: 1fr 1fr;
           gap: 1rem;
@@ -1087,18 +1167,18 @@ const LandingPage = () => {
         }
 
         .drawer-footer-btn.share {
-          background: rgba(255, 255, 255, 0.03);
-          color: #e4e4e7;
-          border: 1px solid rgba(255, 255, 255, 0.06);
+          background: var(--empty-wrapper-bg);
+          color: var(--text-main);
+          border: 1px solid var(--border-color);
         }
 
         .drawer-footer-btn.share:hover {
-          background: rgba(255, 255, 255, 0.08);
+          background: rgba(155, 167, 184, 0.1);
         }
 
         .drawer-footer-btn.full-view {
-          background: #fff;
-          color: #09090b;
+          background: var(--text-main);
+          color: var(--bg-page);
         }
 
         .drawer-footer-btn.full-view:hover {
@@ -1108,15 +1188,15 @@ const LandingPage = () => {
         /* Online Document Preview Overlay Modal */
         .preview-modal-overlay {
           position: fixed; inset: 0; z-index: 3000;
-          background: rgba(0,0,0,0.6);
+          background: var(--drawer-backdrop-bg);
           backdrop-filter: blur(4px);
           display: flex; align-items: center; justify-content: center;
           padding: 2rem;
         }
 
         .preview-modal-content {
-          background: #09090b;
-          border: 1px solid rgba(255, 255, 255, 0.08);
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
           border-radius: 20px;
           width: 100%;
           max-width: 900px;
@@ -1124,12 +1204,12 @@ const LandingPage = () => {
           display: flex;
           flex-direction: column;
           overflow: hidden;
-          box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+          box-shadow: var(--card-shadow-hover);
         }
 
         .preview-modal-header {
           padding: 1rem 1.5rem;
-          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+          border-bottom: 1px solid var(--border-color);
           display: flex;
           justify-content: space-between;
           align-items: center;
@@ -1138,13 +1218,13 @@ const LandingPage = () => {
         .preview-modal-header h3 {
           font-size: 1.1rem;
           font-weight: 700;
-          color: #fff;
+          color: var(--text-main);
         }
 
         .preview-modal-close {
-          background: rgba(255, 255, 255, 0.03);
-          border: 1px solid rgba(255, 255, 255, 0.05);
-          color: #a1a1aa;
+          background: var(--empty-wrapper-bg);
+          border: 1px solid var(--border-color);
+          color: var(--text-muted);
           width: 32px; height: 32px;
           border-radius: 50%;
           display: flex; align-items: center; justify-content: center;
@@ -1164,6 +1244,32 @@ const LandingPage = () => {
           .drawer-container { max-width: 100%; border-left: none; }
           .preview-modal-overlay { padding: 0.5rem; }
           .preview-modal-content { height: 90vh; }
+        }
+
+        /* Footer styling */
+        .page-footer {
+          border-top: 1px solid var(--border-color);
+          background: var(--bg-card);
+          padding: 3rem 1.5rem;
+          margin-top: 5rem;
+          transition: background-color 0.3s, border-color 0.3s;
+        }
+        .footer-content {
+          max-width: 1200px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1.25rem;
+          text-align: center;
+        }
+        .footer-brand {
+          display: flex;
+          align-items: center;
+        }
+        .footer-text {
+          color: var(--text-muted);
+          font-size: 0.9rem;
         }
       `}</style>
     </div>

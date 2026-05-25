@@ -1,5 +1,6 @@
 import React from 'react';
 import { FolderKanban, Globe, LogOut } from 'lucide-react';
+import logoImg from '../assets/logo.png';
 
 const Sidebar = ({ lang, setLang, translations }) => {
   const handleLogout = () => {
@@ -10,8 +11,7 @@ const Sidebar = ({ lang, setLang, translations }) => {
   return (
     <div className="sidebar">
       <div className="logo">
-        <FolderKanban size={32} />
-        <span>SIRADZU</span>
+        <img src={logoImg} alt="SIRADZU" />
       </div>
       
       <ul className="nav-links">

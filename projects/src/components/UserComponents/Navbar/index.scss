@@ -1,2 +1,70 @@
 #navbar {
+  background: rgba(10, 16, 41, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(155, 167, 184, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  padding: 1rem 0;
+
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+  }
+
+  .nav-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    cursor: pointer;
+  }
+
+  .nav-logo {
+    height: 32px;
+    width: auto;
+    object-fit: contain;
+  }
+
+  .brand-name {
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.5px;
+    color: #FFFFFF;
+  }
+
+  .lang-switcher {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(155, 167, 184, 0.15);
+    padding: 3px;
+    border-radius: 8px;
+    display: flex;
+
+    button {
+      background: transparent;
+      border: none;
+      color: #9BA7B8;
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: all 0.2s;
+
+      &.active {
+        background: rgba(255, 255, 255, 0.08);
+        color: #FFFFFF;
+      }
+
+      &:hover:not(.active) {
+        color: #FFFFFF;
+      }
+    }
+  }
 }

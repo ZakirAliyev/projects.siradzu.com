@@ -2,16 +2,22 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Presentation, Globe, ArrowLeft, Download, Eye, Layers, Share2, Calendar } from 'lucide-react';
+import { FileText, Presentation, Globe, ArrowLeft, Download, Eye, Layers, Share2, Calendar, Sun, Moon } from 'lucide-react';
 
 import { API_BASE } from '../config';
+import logoImg from '../assets/logo.png';
 
 const PublicProjectPage = () => {
   const { slug } = useParams();
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
   const [project, setProject] = useState(null);
   const [lang, setLang] = useState('az');
   const [loading, setLoading] = useState(true);
   const [previewFile, setPreviewFile] = useState(null);
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+  }, [theme]);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -32,18 +38,26 @@ const PublicProjectPage = () => {
     return `https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(absoluteUrl)}`;
   };
 
-  if (loading) return <div className="loader-container"><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="loader" /></div>;
-  if (!project) return <div className="error-container"><h1>404</h1><p>Not Found</p></div>;
+  if (loading) return <div className={`loader-container ${theme === 'dark' ? 'dark-theme' : ''}`}><motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: "linear" }} className="loader" /></div>;
+  if (!project) return <div className={`error-container ${theme === 'dark' ? 'dark-theme' : ''}`}><h1>404</h1><p>Not Found</p></div>;
 
   return (
-    <div className="public-site">
+    <div className={`public-site ${theme === 'dark' ? 'dark-theme' : ''}`}>
       <nav className="glass-nav">
         <div className="nav-content">
           <div className="brand">
-            <Layers size={18} color="#2563eb" />
-            <span>SIRADZU</span>
+            <img src={logoImg} alt="SIRADZU" className="brand-logo-img" />
           </div>
           <div className="nav-actions">
+            {/* Theme Toggle */}
+            <button 
+              onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+              className="theme-toggle-btn"
+              title={lang === 'az' ? 'Mövzunu dəyiş' : 'Toggle theme'}
+            >
+              {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
+            </button>
+
             <div className="lang-switch-mini">
               <button className={lang === 'az' ? 'active' : ''} onClick={() => setLang('az')}>AZ</button>
               <button className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>EN</button>
@@ -129,23 +143,80 @@ const PublicProjectPage = () => {
         )}
       </AnimatePresence>
 
+      <footer className="public-footer">
+        <div className="footer-content">
+          <div className="footer-brand">
+            <img src={logoImg} alt="SIRADZU" className="brand-logo-img" />
+          </div>
+          <p className="footer-text">
+            {lang === 'az' 
+              ? '© 2026 SIRADZU. Bütün hüquqlar qorunur.' 
+              : '© 2026 SIRADZU. All rights reserved.'}
+          </p>
+        </div>
+      </footer>
+
       <style>{`
         .public-site {
-          background: #fdfdfd;
-          color: #1a1a1a;
+          --bg-page: #F7F7F7;
+          --bg-card: #FFFFFF;
+          --bg-nav: rgba(255, 255, 255, 0.85);
+          --text-main: #0A1029;
+          --text-muted: #9BA7B8;
+          --border-color: rgba(155, 167, 184, 0.15);
+          --logo-filter: none;
+          --switcher-bg: rgba(155, 167, 184, 0.1);
+          --switcher-btn-active: #FFFFFF;
+          --switcher-btn-active-text: #0A1029;
+          --card-shadow: rgba(0,0,0,0.02);
+          --icon-box-word-bg: #eff6ff;
+          --icon-box-word-color: #2563eb;
+          --icon-box-ppt-bg: #fff1f2;
+          --icon-box-ppt-color: #e11d48;
+          --btn-view-bg: #f8fafc;
+          --btn-view-border: #e2e8f0;
+          --btn-view-text: #64748b;
+        }
+
+        .public-site.dark-theme {
+          --bg-page: #0A1029;
+          --bg-card: #0d1430;
+          --bg-nav: rgba(10, 16, 41, 0.85);
+          --text-main: #FFFFFF;
+          --text-muted: #9BA7B8;
+          --border-color: rgba(155, 167, 184, 0.15);
+          --logo-filter: brightness(0) invert(1);
+          --switcher-bg: rgba(255, 255, 255, 0.03);
+          --switcher-btn-active: rgba(255, 255, 255, 0.08);
+          --switcher-btn-active-text: #FFFFFF;
+          --card-shadow: rgba(0,0,0,0.2);
+          --icon-box-word-bg: rgba(59, 130, 246, 0.08);
+          --icon-box-word-color: #60a5fa;
+          --icon-box-ppt-bg: rgba(239, 68, 68, 0.08);
+          --icon-box-ppt-color: #f87171;
+          --btn-view-bg: rgba(255, 255, 255, 0.03);
+          --btn-view-border: rgba(255, 255, 255, 0.06);
+          --btn-view-text: #e4e4e7;
+        }
+
+        .public-site {
+          background: var(--bg-page);
+          color: var(--text-main);
           min-height: 100vh;
           font-family: 'Inter', sans-serif;
           font-size: 14px;
           line-height: 1.6;
+          transition: background-color 0.3s, color 0.3s;
         }
 
         .glass-nav {
           position: fixed;
           top: 0; left: 0; right: 0;
           z-index: 1000;
-          background: rgba(255, 255, 255, 0.85);
+          background: var(--bg-nav);
           backdrop-filter: blur(20px);
-          border-bottom: 1px solid #eee;
+          border-bottom: 1px solid var(--border-color);
+          transition: background-color 0.3s, border-color 0.3s;
         }
 
         .nav-content {
@@ -160,10 +231,14 @@ const PublicProjectPage = () => {
         .brand {
           display: flex;
           align-items: center;
-          gap: 0.6rem;
-          font-weight: 700;
-          font-size: 1.1rem;
-          color: #000;
+        }
+
+        .brand-logo-img {
+          height: 34px;
+          width: auto;
+          object-fit: contain;
+          filter: var(--logo-filter);
+          transition: filter 0.3s;
         }
 
         .nav-actions {
@@ -173,35 +248,65 @@ const PublicProjectPage = () => {
           flex-wrap: nowrap;
         }
 
+        .theme-toggle-btn {
+          background: var(--switcher-bg);
+          border: 1px solid var(--border-color);
+          color: var(--text-main);
+          width: 32px;
+          height: 32px;
+          border-radius: 8px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .theme-toggle-btn:hover {
+          background: rgba(155, 167, 184, 0.2);
+        }
+
         .lang-switch-mini {
-          background: #f1f5f9;
+          background: var(--switcher-bg);
           padding: 3px;
           border-radius: 8px;
           display: flex;
+          border: 1px solid var(--border-color);
+          transition: background-color 0.3s, border-color 0.3s;
         }
 
         .lang-switch-mini button {
           background: transparent;
           border: none;
-          color: #64748b;
+          color: var(--text-muted);
           padding: 4px 10px;
           font-size: 0.75rem;
           font-weight: 700;
           cursor: pointer;
           border-radius: 6px;
+          transition: all 0.2s;
         }
 
-        .lang-switch-mini button.active { background: #fff; color: #000; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .lang-switch-mini button.active { 
+          background: var(--switcher-btn-active); 
+          color: var(--switcher-btn-active-text); 
+          box-shadow: 0 2px 4px rgba(0,0,0,0.05); 
+        }
 
         .icon-btn {
-          background: #fff;
-          border: 1px solid #e2e8f0;
-          color: #64748b;
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
+          color: var(--text-muted);
           width: 32px; height: 32px;
           border-radius: 8px;
           display: flex; align-items: center; justify-content: center;
           cursor: pointer;
           margin-left: 0.5rem;
+          transition: all 0.2s;
+        }
+        .icon-btn:hover {
+          background: var(--switcher-bg);
+          color: var(--text-main);
         }
 
         .hero { padding-top: 50px; }
@@ -211,9 +316,9 @@ const PublicProjectPage = () => {
           margin: 0 auto;
           width: 100%;
           aspect-ratio: 3000 / 1055;
-          background: #fff;
+          background: var(--bg-card);
           overflow: hidden;
-          border-bottom: 1px solid #f1f5f9;
+          border-bottom: 1px solid var(--border-color);
         }
 
         .hero-img { width: 100%; height: 100%; object-fit: contain; }
@@ -228,8 +333,9 @@ const PublicProjectPage = () => {
         .hero-text .badge {
           display: inline-block;
           padding: 4px 10px;
-          background: #f1f5f9;
-          color: #64748b;
+          background: var(--switcher-bg);
+          color: var(--text-main);
+          border: 1px solid var(--border-color);
           border-radius: 4px;
           font-size: 0.7rem;
           font-weight: 700;
@@ -241,11 +347,11 @@ const PublicProjectPage = () => {
           font-weight: 800;
           margin-bottom: 1rem;
           letter-spacing: -0.5px;
-          color: #000;
+          color: var(--text-main);
         }
 
         .hero-text p {
-          color: #666;
+          color: var(--text-muted);
           font-size: 1rem;
           margin-bottom: 1.5rem;
           max-width: 800px;
@@ -255,7 +361,7 @@ const PublicProjectPage = () => {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          color: #94a3b8;
+          color: var(--text-muted);
           font-size: 0.8rem;
         }
 
@@ -266,20 +372,20 @@ const PublicProjectPage = () => {
         }
 
         .section-header { margin-bottom: 2rem; text-align: left; }
-        .section-header h2 { font-size: 1.1rem; font-weight: 700; color: #000; margin-bottom: 0.5rem; }
-        .section-header p { color: #64748b; font-size: 0.9rem; }
+        .section-header h2 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; }
+        .section-header p { color: var(--text-muted); font-size: 0.9rem; }
 
         .resource-grid { display: grid; gap: 0.8rem; }
 
         .resource-card {
-          background: #fff;
-          border: 1px solid #f1f5f9;
+          background: var(--bg-card);
+          border: 1px solid var(--border-color);
           padding: 1.2rem;
           border-radius: 12px;
           display: flex;
           align-items: center;
           gap: 1.2rem;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+          box-shadow: var(--card-shadow);
         }
 
         .icon-box {
@@ -289,11 +395,11 @@ const PublicProjectPage = () => {
           flex-shrink: 0;
         }
 
-        .icon-box.word { background: #eff6ff; color: #2563eb; }
-        .icon-box.ppt { background: #fff1f2; color: #e11d48; }
+        .icon-box.word { background: var(--icon-box-word-bg); color: var(--icon-box-word-color); }
+        .icon-box.ppt { background: var(--icon-box-ppt-bg); color: var(--icon-box-ppt-color); }
 
         .res-info { flex: 1; }
-        .res-info h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.8rem; color: #000; }
+        .res-info h3 { font-size: 0.95rem; font-weight: 600; margin-bottom: 0.8rem; color: var(--text-main); }
         .res-actions { display: flex; gap: 0.5rem; }
 
         .action-link {
@@ -308,20 +414,20 @@ const PublicProjectPage = () => {
           transition: 0.2s;
         }
 
-        .action-link.view { background: #f8fafc; color: #64748b; border: 1px solid #e2e8f0; }
-        .action-link.download { background: #2563eb; color: #fff; }
+        .action-link.view { background: var(--btn-view-bg); color: var(--btn-view-text); border: 1px solid var(--btn-view-border); }
+        .action-link.download { background: var(--text-main); color: var(--bg-page); }
         .action-link:hover { opacity: 0.8; }
 
         .preview-overlay {
           position: fixed; inset: 0; z-index: 2000;
-          background: rgba(0,0,0,0.4);
+          background: var(--drawer-backdrop-bg);
           backdrop-filter: blur(4px);
           display: flex; align-items: flex-end;
         }
 
         .preview-sheet {
           width: 100%; height: 90vh;
-          background: #fff;
+          background: var(--bg-card);
           border-top-left-radius: 24px; border-top-right-radius: 24px;
           display: flex; flex-direction: column;
           box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
@@ -330,21 +436,60 @@ const PublicProjectPage = () => {
         .sheet-header {
           padding: 1rem 1.5rem;
           display: flex; justify-content: space-between; align-items: center;
-          color: #000; border-bottom: 1px solid #f1f5f9;
+          color: var(--text-main); border-bottom: 1px solid var(--border-color);
         }
 
         .sheet-header h3 { font-size: 1.1rem; font-weight: 700; }
 
         .close-sheet {
-          background: #f1f5f9; border: none;
+          background: var(--switcher-bg); border: none;
+          color: var(--text-main);
           width: 36px; height: 36px;
           border-radius: 50%;
           display: flex; align-items: center; justify-content: center;
           cursor: pointer;
         }
 
-        .loader-container { height: 100vh; display: flex; align-items: center; justify-content: center; background: #fff; }
-        .loader { width: 30px; height: 30px; border: 2px solid #f1f5f9; border-top-color: #2563eb; border-radius: 50%; }
+        .loader-container {
+          --bg-page: #F7F7F7;
+          --border-color: rgba(155, 167, 184, 0.15);
+          --text-main: #0A1029;
+          height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--bg-page);
+        }
+        .loader-container.dark-theme {
+          --bg-page: #0A1029;
+          --border-color: rgba(255, 255, 255, 0.05);
+          --text-main: #FFFFFF;
+        }
+        .loader {
+          width: 30px;
+          height: 30px;
+          border: 2px solid var(--border-color);
+          border-top-color: var(--text-main);
+          border-radius: 50%;
+        }
+
+        .error-container {
+          --bg-page: #F7F7F7;
+          --text-main: #0A1029;
+          --text-muted: #9BA7B8;
+          height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background: var(--bg-page);
+          color: var(--text-main);
+        }
+        .error-container.dark-theme {
+          --bg-page: #0A1029;
+          --text-main: #FFFFFF;
+          --text-muted: #9BA7B8;
+        }
         
         @media (max-width: 600px) {
           .hero-image-container { aspect-ratio: 3000 / 1055; border-radius: 0; }
@@ -357,6 +502,34 @@ const PublicProjectPage = () => {
           .res-info h3 { font-size: 0.9rem; margin-bottom: 0.5rem; }
           .action-link { padding: 6px 10px; font-size: 0.7rem; }
           .nav-content { padding: 0.8rem 1rem; }
+        }
+
+        /* Public Footer */
+        .public-footer {
+          border-top: 1px solid var(--border-color);
+          background: var(--bg-card);
+          padding: 2.5rem 1.5rem;
+          margin-top: 5rem;
+          transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .footer-content {
+          max-width: 1100px;
+          margin: 0 auto;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 1rem;
+        }
+
+        .footer-brand {
+          display: flex;
+          align-items: center;
+        }
+
+        .footer-text {
+          color: var(--text-muted);
+          font-size: 0.85rem;
         }
       `}</style>
     </div>

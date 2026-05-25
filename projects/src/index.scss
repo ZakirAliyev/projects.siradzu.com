@@ -1,12 +1,12 @@
 :root {
-  --primary: #8DAD45;
-  --primary-hover: #7a973a;
-  --bg: #0b0f19;
-  --sidebar-bg: #111827;
-  --card-bg: #1f2937;
-  --text: #f3f4f6;
-  --text-muted: #9ca3af;
-  --border: #374151;
+  --primary: #3b82f6;
+  --primary-hover: #2563eb;
+  --bg: #0A1029;
+  --sidebar-bg: #0d1430;
+  --card-bg: rgba(255, 255, 255, 0.02);
+  --text: #FFFFFF;
+  --text-muted: #9BA7B8;
+  --border: rgba(155, 167, 184, 0.15);
   --glass: rgba(255, 255, 255, 0.03);
   --sidebar-width: 280px;
 }
@@ -48,7 +48,7 @@ body {
   flex: 1;
   margin-left: var(--sidebar-width);
   padding: 3rem 4rem;
-  background: radial-gradient(circle at top right, #1e293b, var(--bg));
+  background: radial-gradient(circle at top right, #0d1430, var(--bg));
   min-height: 100vh;
 }
 
@@ -62,6 +62,12 @@ body {
   align-items: center;
   gap: 0.8rem;
   letter-spacing: -1px;
+}
+
+.logo img {
+  height: 32px;
+  width: auto;
+  object-fit: contain;
 }
 
 .logo svg {
