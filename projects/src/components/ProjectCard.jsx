@@ -3,13 +3,20 @@ import { FileText, Presentation, Trash2, ExternalLink, Pencil } from 'lucide-rea
 
 import { API_BASE } from '../config';
 
-const ProjectCard = ({ project, lang, onDelete, onView, onEdit }) => {
+const ProjectCard = ({ project, lang, onDelete, onView, onEdit, onToggleVisibility }) => {
   const detailsText = lang === 'az' ? 'Detallar' : 'Details';
 
   return (
     <div className="project-card fade-in">
       <div className="card-img-wrapper">
         <img src={`${API_BASE}${project.cardImage}`} alt={project.name[lang]} />
+        <div style={{ position: 'absolute', top: '10px', right: '10px', zIndex: 10 }}>
+          {project.showInMenu !== false ? (
+            <span className="badge-visible">{lang === 'az' ? 'Görünür' : 'Visible'}</span>
+          ) : (
+            <span className="badge-hidden">{lang === 'az' ? 'Gizli' : 'Hidden'}</span>
+          )}
+        </div>
       </div>
       <div className="card-body">
         <h3 style={{ marginBottom: '0.5rem', fontWeight: '700' }}>{project.name[lang]}</h3>
@@ -28,6 +35,23 @@ const ProjectCard = ({ project, lang, onDelete, onView, onEdit }) => {
               <FileText size={14} /> Word (EN)
             </a>
           )}
+        </div>
+
+        <div style={{ marginTop: '1.2rem' }}>
+          <div 
+            className="switch-container" 
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleVisibility(project.id, project.showInMenu !== false);
+            }}
+          >
+            <span className="switch-label-text" style={{ fontSize: '0.8rem' }}>
+              {lang === 'az' ? 'Menuda göstər' : 'Show in menu'}
+            </span>
+            <div className={`switch-track ${project.showInMenu !== false ? 'active' : ''}`}>
+              <div className="switch-thumb"></div>
+            </div>
+          </div>
         </div>
 
         <div className="card-actions" style={{ display: 'flex', gap: '0.5rem', marginTop: '1.5rem' }}>

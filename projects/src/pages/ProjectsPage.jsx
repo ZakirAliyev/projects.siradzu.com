@@ -100,6 +100,20 @@ const ProjectsPage = () => {
     }
   };
 
+  const handleToggleShowInMenu = async (id, currentVal) => {
+    try {
+      const data = new FormData();
+      data.append('showInMenu', (!currentVal).toString());
+      
+      const res = await axios.put(`${API_BASE}/api/projects/${id}`, data, getHeaders());
+      
+      setProjects(prev => prev.map(p => p.id === id ? { ...p, showInMenu: res.data.showInMenu } : p));
+      toast.success(lang === 'az' ? 'Görünüş yeniləndi!' : 'Visibility updated!');
+    } catch (err) {
+      toast.error('Failed to update visibility');
+    }
+  };
+
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
 
   useEffect(() => {
@@ -159,26 +173,40 @@ const ProjectsPage = () => {
                 onDelete={handleDelete}
                 onView={() => setSelectedProject(project)}
                 onEdit={() => setEditingProject(project)}
+                onToggleVisibility={handleToggleShowInMenu}
               />
             ))}
           </div>
         ) : (
           <Reorder.Group axis="y" values={projects} onReorder={handleReorder} className="fade-in">
             <div style={{ background: 'var(--glass)', borderRadius: '16px', border: '1px solid var(--border)', overflow: 'hidden' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: '50px 80px 1fr 1fr 150px', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border)', fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 'bold' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '50px 80px 1.5fr 1fr 1.2fr 150px', padding: '1rem 1.5rem', borderBottom: '1px solid var(--border)', fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 'bold' }}>
                 <div></div>
                 <div>{lang === 'az' ? 'Şəkil' : 'Image'}</div>
                 <div>{lang === 'az' ? 'Ad' : 'Name'}</div>
                 <div>Slug</div>
+                <div>{lang === 'az' ? 'Görünüş' : 'Visibility'}</div>
                 <div style={{ textAlign: 'right' }}>{lang === 'az' ? 'Əməliyyatlar' : 'Actions'}</div>
               </div>
               {projects.map((project) => (
                 <Reorder.Item key={project.id} value={project} style={{ listStyle: 'none' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: '50px 80px 1fr 1fr 150px', alignItems: 'center', padding: '1rem 1.5rem', background: 'var(--sidebar-bg)', borderBottom: '1px solid var(--border)', cursor: 'grab' }}>
+                  <div style={{ display: 'grid', gridTemplateColumns: '50px 80px 1.5fr 1fr 1.2fr 150px', alignItems: 'center', padding: '1rem 1.5rem', background: 'var(--sidebar-bg)', borderBottom: '1px solid var(--border)', cursor: 'grab' }}>
                     <div style={{ color: 'var(--text-muted)' }}><GripVertical size={20} /></div>
                     <img src={`${API_BASE}${project.cardImage}`} style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover' }} />
                     <div style={{ fontWeight: '600' }}>{project.name[lang]}</div>
                     <div style={{ color: 'var(--primary)', fontSize: '0.9rem' }}>/{project.slug}</div>
+                    <div>
+                      <div 
+                        className={`switch-track ${project.showInMenu !== false ? 'active' : ''}`}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleToggleShowInMenu(project.id, project.showInMenu !== false);
+                        }}
+                        style={{ cursor: 'pointer' }}
+                      >
+                        <div className="switch-thumb"></div>
+                      </div>
+                    </div>
                     <div style={{ display: 'flex', gap: '0.5rem', justifyContent: 'flex-end' }}>
                       <button className="btn btn-outline" style={{ padding: '0.4rem' }} onClick={() => setSelectedProject(project)}>
                         <ExternalLink size={16} />

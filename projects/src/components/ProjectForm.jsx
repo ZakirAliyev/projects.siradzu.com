@@ -12,6 +12,7 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit }) => {
     desc_az: projectToEdit ? projectToEdit.description.az : '',
     desc_en: projectToEdit ? projectToEdit.description.en : '',
     website: projectToEdit ? (projectToEdit.website || '') : '',
+    showInMenu: projectToEdit ? (projectToEdit.showInMenu !== false) : true,
   });
   const [files, setFiles] = useState({
     cardImage: null,
@@ -84,8 +85,8 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit }) => {
   };
 
   const labels = {
-    az: { name: 'Ad', desc: 'Təsvir', cardImg: 'Kard Şəkli', word: 'Word Sənədi', ppt: 'PPT Sənədi', website: 'Vebsayt Linki (Opsional)', submit: 'Yarat', submitEdit: 'Yadda Saxla' },
-    en: { name: 'Name', desc: 'Description', cardImg: 'Card Image', word: 'Word Doc', ppt: 'PPT Doc', website: 'Website Link (Optional)', submit: 'Create', submitEdit: 'Save Changes' }
+    az: { name: 'Ad', desc: 'Təsvir', cardImg: 'Kard Şəkli', word: 'Word Sənədi', ppt: 'PPT Sənədi', website: 'Vebsayt Linki (Opsional)', showInMenu: 'Menuda Göstər', submit: 'Yarat', submitEdit: 'Yadda Saxla' },
+    en: { name: 'Name', desc: 'Description', cardImg: 'Card Image', word: 'Word Doc', ppt: 'PPT Doc', website: 'Website Link (Optional)', showInMenu: 'Show in Menu', submit: 'Create', submitEdit: 'Save Changes' }
   };
 
   const l = labels[lang];
@@ -119,6 +120,18 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit }) => {
           value={formData.website} 
           onChange={handleInputChange} 
         />
+      </div>
+
+      <div style={{ marginTop: '1.2rem' }}>
+        <div 
+          className="switch-container" 
+          onClick={() => setFormData(prev => ({ ...prev, showInMenu: !prev.showInMenu }))}
+        >
+          <span className="switch-label-text">{l.showInMenu}</span>
+          <div className={`switch-track ${formData.showInMenu ? 'active' : ''}`}>
+            <div className="switch-thumb"></div>
+          </div>
+        </div>
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginTop: '1.5rem' }}>

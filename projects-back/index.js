@@ -64,7 +64,7 @@ app.get(['/api/projects/:slug', '/projects/:slug'], (req, res) => {
 app.post(['/api/projects', '/projects'], authenticateToken, (req, res) => {
     upload(req, res, (err) => {
         if (err) return res.status(500).json({ error: err.message });
-        const { name_az, name_en, desc_az, desc_en, website } = req.body;
+        const { name_az, name_en, desc_az, desc_en, website, showInMenu } = req.body;
         const files = req.files;
         if (!files || !files['cardImage']) return res.status(400).json({ error: 'Card image is required' });
 
@@ -84,6 +84,7 @@ app.post(['/api/projects', '/projects'], authenticateToken, (req, res) => {
             name: { az: name_az, en: name_en },
             description: { az: desc_az, en: desc_en },
             website: website || '',
+            showInMenu: showInMenu !== undefined ? (showInMenu === 'true' || showInMenu === true) : true,
             cardImage: `/uploads/${files['cardImage'][0].filename}`,
             files: {
                 word_az: files['word_az'] ? `/uploads/${files['word_az'][0].filename}` : null,
@@ -116,7 +117,7 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
     upload(req, res, (err) => {
         if (err) return res.status(500).json({ error: err.message });
         const { id } = req.params;
-        const { name_az, name_en, desc_az, desc_en, website, delete_word_az, delete_word_en, delete_ppt_az, delete_ppt_en } = req.body;
+        const { name_az, name_en, desc_az, desc_en, website, showInMenu, delete_word_az, delete_word_en, delete_ppt_az, delete_ppt_en } = req.body;
         const files = req.files || {};
 
         const projects = readProjects();
@@ -129,6 +130,9 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
 
         if (name_az !== undefined) project.name.az = name_az;
         if (website !== undefined) project.website = website;
+        if (showInMenu !== undefined) {
+            project.showInMenu = showInMenu === 'true' || showInMenu === true;
+        }
         
         if (name_en !== undefined && name_en !== project.name.en) {
             project.name.en = name_en;
