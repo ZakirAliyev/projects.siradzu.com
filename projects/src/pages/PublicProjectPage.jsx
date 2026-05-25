@@ -17,6 +17,10 @@ const PublicProjectPage = () => {
 
   useEffect(() => {
     localStorage.setItem('theme', theme);
+    const favicon = document.querySelector("link[rel*='icon']");
+    if (favicon) {
+      favicon.href = theme === 'dark' ? '/favicon-white.png' : '/favicon.png';
+    }
   }, [theme]);
 
   useEffect(() => {

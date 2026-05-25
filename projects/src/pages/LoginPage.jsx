@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import toast, { Toaster } from 'react-hot-toast';
@@ -12,6 +12,13 @@ const LoginPage = () => {
   const [loading, setLoading] = useState(false);
   const [theme] = useState(() => localStorage.getItem('theme') || 'light');
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const favicon = document.querySelector("link[rel*='icon']");
+    if (favicon) {
+      favicon.href = theme === 'dark' ? '/favicon-white.png' : '/favicon.png';
+    }
+  }, [theme]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
