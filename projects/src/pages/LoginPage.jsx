@@ -10,6 +10,7 @@ const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [theme] = useState(() => localStorage.getItem('theme') || 'light');
   const navigate = useNavigate();
 
   const handleLogin = async (e) => {
@@ -28,7 +29,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="login-page">
+    <div className={`login-page ${theme === 'dark' ? '' : 'light-theme'}`}>
       <Toaster position="top-center" />
       <div className="login-card fade-in">
         <div className="login-header">
@@ -76,6 +77,10 @@ const LoginPage = () => {
           justify-content: center;
           background: #0A1029;
           font-family: 'Inter', sans-serif;
+          transition: background-color 0.3s;
+        }
+        .login-page.light-theme {
+          background: #F7F7F7;
         }
         .login-card {
           background: #0d1430;
@@ -85,6 +90,12 @@ const LoginPage = () => {
           width: 100%;
           max-width: 450px;
           border: 1px solid rgba(155, 167, 184, 0.15);
+          transition: background-color 0.3s, border-color 0.3s;
+        }
+        .login-page.light-theme .login-card {
+          background: #FFFFFF;
+          border-color: rgba(155, 167, 184, 0.2);
+          box-shadow: 0 20px 50px rgba(10, 16, 41, 0.05);
         }
         .login-header {
           text-align: center;
@@ -101,8 +112,13 @@ const LoginPage = () => {
           height: 100%;
           width: auto;
           object-fit: contain;
+          transition: filter 0.3s;
+        }
+        .login-page:not(.light-theme) .login-logo img {
+          filter: brightness(0) invert(1);
         }
         .login-header h1 { font-size: 1.5rem; font-weight: 800; color: #FFFFFF; margin-bottom: 0.5rem; }
+        .login-page.light-theme .login-header h1 { color: #0A1029; }
         .login-header p { color: #9BA7B8; font-size: 0.9rem; }
         .form-group { margin-bottom: 1.5rem; }
         .form-group label { display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 600; color: #9BA7B8; margin-bottom: 0.6rem; }
@@ -116,7 +132,13 @@ const LoginPage = () => {
           font-size: 0.95rem;
           transition: 0.2s;
         }
+        .login-page.light-theme .form-group input {
+          background: #FFFFFF;
+          color: #0A1029;
+          border-color: rgba(155, 167, 184, 0.3);
+        }
         .form-group input:focus { border-color: #3b82f6; outline: none; background: #0A1029; box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.15); }
+        .login-page.light-theme .form-group input:focus { background: #FFFFFF; }
         .btn-login {
           width: 100%;
           padding: 0.9rem;

@@ -100,15 +100,21 @@ const ProjectsPage = () => {
     }
   };
 
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
+
+  useEffect(() => {
+    localStorage.setItem('theme', theme);
+  }, [theme]);
+
   useEffect(() => {
     fetchProjects();
   }, []);
 
   return (
-    <div className="admin-layout">
+    <div className={`admin-layout ${theme === 'dark' ? '' : 'light-theme'}`}>
       <Toaster position="top-right" />
 
-      <Sidebar lang={lang} setLang={setLang} translations={t} />
+      <Sidebar lang={lang} setLang={setLang} translations={t} theme={theme} setTheme={setTheme} />
 
       <main className="main-content">
         <div className="top-bar">
