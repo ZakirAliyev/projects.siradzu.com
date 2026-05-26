@@ -60,7 +60,9 @@ const LandingPage = () => {
   };
 
   const filteredProjects = projects.filter(p => {
-    if (p.showInMenu === false) return false;
+    const isMVP = window.location.hostname === 'mvp.siradzu.com';
+    const isHidden = p.showInMenu === false || p.showInMenu === 'false';
+    if (isHidden && !isMVP) return false;
     const name = p.name[lang] || '';
     const desc = p.description[lang] || '';
     return name.toLowerCase().includes(searchTerm.toLowerCase()) || 
