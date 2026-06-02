@@ -18,20 +18,6 @@ function Navbar() {
                         <img src={logoImg} alt="SIRADZU" className="nav-logo" />
                     </div>
                     <div className="nav-actions">
-                        <div className="lang-switcher">
-                            <button 
-                                className={i18n.language === 'az' ? 'active' : ''} 
-                                onClick={() => changeLanguage('az')}
-                            >
-                                AZ
-                            </button>
-                            <button 
-                                className={i18n.language === 'en' ? 'active' : ''} 
-                                onClick={() => changeLanguage('en')}
-                            >
-                                EN
-                            </button>
-                        </div>
                     </div>
                 </nav>
             </div>

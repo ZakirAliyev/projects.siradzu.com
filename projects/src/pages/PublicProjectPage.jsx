@@ -11,7 +11,7 @@ const PublicProjectPage = () => {
   const { slug } = useParams();
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
   const [project, setProject] = useState(null);
-  const [lang, setLang] = useState('az');
+  const [lang, setLang] = useState('en');
   const [loading, setLoading] = useState(true);
   const [previewFile, setPreviewFile] = useState(null);
 
@@ -61,11 +61,6 @@ const PublicProjectPage = () => {
             >
               {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
             </button>
-
-            <div className="lang-switch-mini">
-              <button className={lang === 'az' ? 'active' : ''} onClick={() => setLang('az')}>AZ</button>
-              <button className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>EN</button>
-            </div>
             <button className="icon-btn"><Share2 size={16} /></button>
           </div>
         </div>
@@ -114,10 +109,8 @@ const PublicProjectPage = () => {
 
           <div className="resource-grid">
             {[
-              { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP (AZ)' : 'MVP (AZ)', file: project.files.word_az },
-              { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP (EN)' : 'MVP (EN)', file: project.files.word_en },
-              { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat (AZ)' : 'Presentation (AZ)', file: project.files.ppt_az },
-              { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat (EN)' : 'Presentation (EN)', file: project.files.ppt_en },
+              { id: 'word_en', type: 'word', label: 'MVP (EN)', file: project.files.word_en },
+              { id: 'ppt_en', type: 'ppt', label: 'Presentation (EN)', file: project.files.ppt_en },
             ].filter(f => f.file).map((item, idx) => (
               <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="resource-card">
                 <div className={`icon-box ${item.type}`}>

@@ -7,20 +7,19 @@ export const LanguageProvider = ({children}) => {
     const [language, setLanguage] = useState('en');
 
     useEffect(() => {
-        const savedLang = localStorage.getItem('lang');
-        const defaultLang = savedLang || 'en';
-        setLanguage(defaultLang);
-        i18n.changeLanguage(defaultLang);
+        setLanguage('en');
+        i18n.changeLanguage('en');
+        localStorage.setItem('lang', 'en');
     }, []);
 
     const changeLanguage = (lang) => {
-        setLanguage(lang);
-        i18n.changeLanguage(lang);
-        localStorage.setItem('lang', lang);
+        setLanguage('en');
+        i18n.changeLanguage('en');
+        localStorage.setItem('lang', 'en');
     };
 
     return (
-        <LanguageContext.Provider value={{language, changeLanguage}}>
+        <LanguageContext.Provider value={{language: 'en', changeLanguage}}>
             {children}
         </LanguageContext.Provider>
     );

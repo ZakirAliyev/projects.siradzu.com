@@ -13,12 +13,12 @@ const resources = {
 };
 
 i18n
-    .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         resources,
+        lng: 'en',
         fallbackLng: 'en',
-        supportedLngs: ['en', 'az', 'ru'],
+        supportedLngs: ['en'],
         interpolation: {
             escapeValue: false,
         },
