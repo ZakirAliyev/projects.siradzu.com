@@ -22,9 +22,10 @@ const LandingPage = () => {
       favicon.href = theme === 'dark' ? '/favicon-white.png' : '/favicon.png';
     }
   }, [theme]);
+  const isProjectsSite = window.location.hostname === 'projects.siradzu.com';
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [lang, setLang] = useState('en');
+  const [lang, setLang] = useState(isProjectsSite ? 'en' : 'az');
   const [selectedProject, setSelectedProject] = useState(null);
   const [copiedId, setCopiedId] = useState(false);
   const [previewFile, setPreviewFile] = useState(null);
@@ -130,6 +131,24 @@ const LandingPage = () => {
             >
               {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
             </button>
+
+            {/* Language Switch */}
+            {!isProjectsSite && (
+              <div className="lang-switcher">
+                <button 
+                  className={lang === 'az' ? 'active' : ''} 
+                  onClick={() => setLang('az')}
+                >
+                  AZ
+                </button>
+                <button 
+                  className={lang === 'en' ? 'active' : ''} 
+                  onClick={() => setLang('en')}
+                >
+                  EN
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </nav>
@@ -342,9 +361,11 @@ const LandingPage = () => {
 
                   <div className="drawer-files-list">
                     {[
-                      { id: 'word_en', type: 'word', label: 'MVP Concept (EN)', file: selectedProject.files.word_en },
-                      { id: 'ppt_en', type: 'ppt', label: 'Presentation Document (EN)', file: selectedProject.files.ppt_en },
-                    ].filter(f => f.file).map((item) => (
+                      !isProjectsSite && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP Konsepti (AZ)' : 'MVP Concept (AZ)', file: selectedProject.files.word_az },
+                      { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP Konsepti (EN)' : 'MVP Concept (EN)', file: selectedProject.files.word_en },
+                      !isProjectsSite && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (AZ)' : 'Presentation Document (AZ)', file: selectedProject.files.ppt_az },
+                      { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (EN)' : 'Presentation Document (EN)', file: selectedProject.files.ppt_en },
+                    ].filter(Boolean).filter(f => f.file).map((item) => (
                       <div key={item.id} className="drawer-file-card">
                         <div className={`drawer-file-icon ${item.type}`}>
                           {item.type === 'word' ? <FileText size={20} /> : <Presentation size={20} />}
