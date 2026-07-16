@@ -6,7 +6,7 @@ const { randomUUID } = require('crypto');
 const slugify = require('slugify');
 const jwt = require('jsonwebtoken');
 const upload = require('./upload');
-const { readProjects, writeProjects } = require('./storage');
+const { readProjects, writeProjects, readSettings, writeSettings } = require('./storage');
 
 const app = express();
 const isProduction = process.env.USER === 'root' || process.env.HOME === '/root';
@@ -69,7 +69,7 @@ app.post(['/api/projects', '/projects'], authenticateToken, (req, res) => {
         if (!files || !files['cardImage']) return res.status(400).json({ error: 'Card image is required' });
 
         const projects = readProjects();
-        let slug = slugify(name_en || 'project', { lower: true, strict: true });
+        let slug = slugify(name_en || name_az || 'project', { lower: true, strict: true });
         let originalSlug = slug;
         let counter = 1;
         while (projects.some(p => p.slug === slug)) {
@@ -134,9 +134,19 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
             project.showInMenu = showInMenu === 'true' || showInMenu === true;
         }
         
-        if (name_en !== undefined && name_en !== project.name.en) {
+        if (name_en !== undefined && name_en !== project.name.en && name_en !== '') {
             project.name.en = name_en;
             let slug = slugify(name_en, { lower: true, strict: true });
+            let originalSlug = slug;
+            let counter = 1;
+            while (projects.some(p => p.slug === slug && p.id !== id)) {
+                slug = `${originalSlug}-${counter}`;
+                counter++;
+            }
+            project.slug = slug;
+        } else if (name_az !== undefined && name_az !== project.name.az && (!name_en || name_en === '')) {
+            project.name.az = name_az;
+            let slug = slugify(name_az, { lower: true, strict: true });
             let originalSlug = slug;
             let counter = 1;
             while (projects.some(p => p.slug === slug && p.id !== id)) {
@@ -187,6 +197,29 @@ app.delete(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res)
     projects = projects.filter(p => p.id !== id);
     writeProjects(projects);
     res.json({ message: 'Project deleted' });
+});
+
+// Get settings (Public)
+app.get(['/api/settings', '/settings'], (req, res) => {
+    const settings = readSettings();
+    res.json(settings);
+});
+
+// Update settings (Protected)
+app.put(['/api/settings', '/settings'], authenticateToken, (req, res) => {
+    const { activeLanguages } = req.body;
+    if (!Array.isArray(activeLanguages) || activeLanguages.length === 0) {
+        return res.status(400).json({ error: 'At least one active language is required.' });
+    }
+    // Only allow 'az' and 'en'
+    const allowed = ['az', 'en'];
+    const invalid = activeLanguages.some(l => !allowed.includes(l));
+    if (invalid) {
+        return res.status(400).json({ error: 'Invalid language code' });
+    }
+    const settings = { activeLanguages };
+    writeSettings(settings);
+    res.json(settings);
 });
 
 

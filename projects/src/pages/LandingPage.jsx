@@ -29,12 +29,29 @@ const LandingPage = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [copiedId, setCopiedId] = useState(false);
   const [previewFile, setPreviewFile] = useState(null);
+  const [activeLanguages, setActiveLanguages] = useState(['az', 'en']);
 
   useEffect(() => {
-    const fetchProjects = async () => {
+    const fetchData = async () => {
+      try {
+        const settingsRes = await axios.get(`${API_BASE}/api/settings`);
+        let activeLangs = ['az', 'en'];
+        if (settingsRes.data && settingsRes.data.activeLanguages) {
+          activeLangs = settingsRes.data.activeLanguages;
+          setActiveLanguages(activeLangs);
+          setLang(prev => {
+            if (!activeLangs.includes(prev)) {
+              return activeLangs[0];
+            }
+            return prev;
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching settings:", err);
+      }
+
       try {
         const res = await axios.get(`${API_BASE}/api/projects`);
-        // Sort projects by order ascending
         const sorted = (res.data || []).sort((a, b) => (a.order || 0) - (b.order || 0));
         setProjects(sorted);
       } catch (err) {
@@ -43,7 +60,7 @@ const LandingPage = () => {
         setLoading(false);
       }
     };
-    fetchProjects();
+    fetchData();
   }, []);
 
   const handleCopyLink = (slug) => {
@@ -133,20 +150,24 @@ const LandingPage = () => {
             </button>
 
             {/* Language Switch */}
-            {!isProjectsSite && (
+            {!isProjectsSite && activeLanguages.length > 1 && (
               <div className="lang-switcher">
-                <button 
-                  className={lang === 'az' ? 'active' : ''} 
-                  onClick={() => setLang('az')}
-                >
-                  AZ
-                </button>
-                <button 
-                  className={lang === 'en' ? 'active' : ''} 
-                  onClick={() => setLang('en')}
-                >
-                  EN
-                </button>
+                {activeLanguages.includes('az') && (
+                  <button 
+                    className={lang === 'az' ? 'active' : ''} 
+                    onClick={() => setLang('az')}
+                  >
+                    AZ
+                  </button>
+                )}
+                {activeLanguages.includes('en') && (
+                  <button 
+                    className={lang === 'en' ? 'active' : ''} 
+                    onClick={() => setLang('en')}
+                  >
+                    EN
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -256,10 +277,10 @@ const LandingPage = () => {
                       {project.website ? (
                         <span className="indicator-badge web" title="Website Available">WEB</span>
                       ) : null}
-                      {project.files.word_az || project.files.word_en ? (
+                      {((project.files.word_az && activeLanguages.includes('az')) || (project.files.word_en && activeLanguages.includes('en'))) ? (
                         <span className="indicator-badge doc" title="Word Document Available">DOC</span>
                       ) : null}
-                      {project.files.ppt_az || project.files.ppt_en ? (
+                      {((project.files.ppt_az && activeLanguages.includes('az')) || (project.files.ppt_en && activeLanguages.includes('en'))) ? (
                         <span className="indicator-badge ppt" title="Presentation Available">PPT</span>
                       ) : null}
                     </div>
@@ -361,10 +382,10 @@ const LandingPage = () => {
 
                   <div className="drawer-files-list">
                     {[
-                      !isProjectsSite && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP Konsepti (AZ)' : 'MVP Concept (AZ)', file: selectedProject.files.word_az },
-                      { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP Konsepti (EN)' : 'MVP Concept (EN)', file: selectedProject.files.word_en },
-                      !isProjectsSite && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (AZ)' : 'Presentation Document (AZ)', file: selectedProject.files.ppt_az },
-                      { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (EN)' : 'Presentation Document (EN)', file: selectedProject.files.ppt_en },
+                      !isProjectsSite && activeLanguages.includes('az') && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP Konsepti (AZ)' : 'MVP Concept (AZ)', file: selectedProject.files.word_az },
+                      activeLanguages.includes('en') && { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP Konsepti (EN)' : 'MVP Concept (EN)', file: selectedProject.files.word_en },
+                      !isProjectsSite && activeLanguages.includes('az') && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (AZ)' : 'Presentation Document (AZ)', file: selectedProject.files.ppt_az },
+                      activeLanguages.includes('en') && { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (EN)' : 'Presentation Document (EN)', file: selectedProject.files.ppt_en },
                     ].filter(Boolean).filter(f => f.file).map((item) => (
                       <div key={item.id} className="drawer-file-card">
                         <div className={`drawer-file-icon ${item.type}`}>

@@ -2,7 +2,7 @@ import React from 'react';
 import { FolderKanban, Globe, LogOut, Sun, Moon } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
-const Sidebar = ({ lang, setLang, translations, theme, setTheme }) => {
+const Sidebar = ({ lang, setLang, translations, theme, setTheme, activeTab, setActiveTab, activeLanguages = ['az', 'en'] }) => {
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
     window.location.href = '/login';
@@ -15,9 +15,13 @@ const Sidebar = ({ lang, setLang, translations, theme, setTheme }) => {
       </div>
       
       <ul className="nav-links">
-        <li className="nav-item active">
+        <li className={`nav-item ${activeTab === 'projects' ? 'active' : ''}`} onClick={() => setActiveTab('projects')}>
           <FolderKanban size={20} />
           <span>{translations.projects}</span>
+        </li>
+        <li className={`nav-item ${activeTab === 'settings' ? 'active' : ''}`} onClick={() => setActiveTab('settings')} style={{ marginTop: '0.5rem' }}>
+          <Globe size={20} />
+          <span>{lang === 'az' ? 'Sazlamalar' : 'Settings'}</span>
         </li>
       </ul>
 
@@ -30,14 +34,16 @@ const Sidebar = ({ lang, setLang, translations, theme, setTheme }) => {
           <span>{lang === 'az' ? (theme === 'light' ? 'Qaranlıq' : 'İşıqlı') : (theme === 'light' ? 'Dark Mode' : 'Light Mode')}</span>
         </div>
 
-        <div 
-          className="sidebar-lang-toggle" 
-          onClick={() => setLang(lang === 'az' ? 'en' : 'az')}
-          style={{ marginTop: '0.5rem' }}
-        >
-          <Globe size={20} />
-          <span>{lang.toUpperCase()}</span>
-        </div>
+        {activeLanguages.length > 1 && (
+          <div 
+            className="sidebar-lang-toggle" 
+            onClick={() => setLang(lang === 'az' ? 'en' : 'az')}
+            style={{ marginTop: '0.5rem' }}
+          >
+            <Globe size={20} />
+            <span>{lang.toUpperCase()}</span>
+          </div>
+        )}
 
         <div 
           className="sidebar-lang-toggle" 

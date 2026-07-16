@@ -2,7 +2,7 @@ import { FileText, Presentation, Calendar, Globe } from 'lucide-react';
 
 import { API_BASE } from '../config';
 
-const ProjectDetails = ({ project, lang }) => {
+const ProjectDetails = ({ project, lang, activeLanguages = ['az', 'en'] }) => {
   if (!project) return null;
 
   const labels = {
@@ -11,6 +11,8 @@ const ProjectDetails = ({ project, lang }) => {
   };
 
   const l = labels[lang];
+  const showAz = activeLanguages.includes('az');
+  const showEn = activeLanguages.includes('en');
 
   return (
     <div className="fade-in">
@@ -48,33 +50,37 @@ const ProjectDetails = ({ project, lang }) => {
             {project.description[lang]}
           </p>
 
-          <h4 style={{ marginBottom: '1rem', color: 'var(--primary)' }}>{l.docs}</h4>
-          <div style={{ display: 'grid', gap: '1rem' }}>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {project.files.word_az && (
-                <a href={`${API_BASE}${project.files.word_az}`} className="btn btn-outline" target="_blank" rel="noreferrer" style={{ flex: 1 }}>
-                  <FileText size={16} /> Word (AZ)
-                </a>
-              )}
-              {project.files.word_en && (
-                <a href={`${API_BASE}${project.files.word_en}`} className="btn btn-outline" target="_blank" rel="noreferrer" style={{ flex: 1 }}>
-                  <FileText size={16} /> Word (EN)
-                </a>
-              )}
-            </div>
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              {project.files.ppt_az && (
-                <a href={`${API_BASE}${project.files.ppt_az}`} className="btn btn-outline" target="_blank" rel="noreferrer" style={{ flex: 1 }}>
-                  <Presentation size={16} /> PPT (AZ)
-                </a>
-              )}
-              {project.files.ppt_en && (
-                <a href={`${API_BASE}${project.files.ppt_en}`} className="btn btn-outline" target="_blank" rel="noreferrer" style={{ flex: 1 }}>
-                  <Presentation size={16} /> PPT (EN)
-                </a>
-              )}
-            </div>
-          </div>
+          {(showAz || showEn) && (
+            <>
+              <h4 style={{ marginBottom: '1rem', color: 'var(--primary)' }}>{l.docs}</h4>
+              <div style={{ display: 'grid', gap: '1rem' }}>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  {showAz && project.files.word_az && (
+                    <a href={`${API_BASE}${project.files.word_az}`} className="btn btn-outline" target="_blank" rel="noreferrer" style={{ flex: 1 }}>
+                      <FileText size={16} /> Word (AZ)
+                    </a>
+                  )}
+                  {showEn && project.files.word_en && (
+                    <a href={`${API_BASE}${project.files.word_en}`} className="btn btn-outline" target="_blank" rel="noreferrer" style={{ flex: 1 }}>
+                      <FileText size={16} /> Word (EN)
+                    </a>
+                  )}
+                </div>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  {showAz && project.files.ppt_az && (
+                    <a href={`${API_BASE}${project.files.ppt_az}`} className="btn btn-outline" target="_blank" rel="noreferrer" style={{ flex: 1 }}>
+                      <Presentation size={16} /> PPT (AZ)
+                    </a>
+                  )}
+                  {showEn && project.files.ppt_en && (
+                    <a href={`${API_BASE}${project.files.ppt_en}`} className="btn btn-outline" target="_blank" rel="noreferrer" style={{ flex: 1 }}>
+                      <Presentation size={16} /> PPT (EN)
+                    </a>
+                  )}
+                </div>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </div>

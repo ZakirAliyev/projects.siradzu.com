@@ -24,8 +24,27 @@ const PublicProjectPage = () => {
     }
   }, [theme]);
 
+  const [activeLanguages, setActiveLanguages] = useState(['az', 'en']);
+
   useEffect(() => {
-    const fetchProject = async () => {
+    const fetchData = async () => {
+      try {
+        const settingsRes = await axios.get(`${API_BASE}/api/settings`);
+        let activeLangs = ['az', 'en'];
+        if (settingsRes.data && settingsRes.data.activeLanguages) {
+          activeLangs = settingsRes.data.activeLanguages;
+          setActiveLanguages(activeLangs);
+          setLang(prev => {
+            if (!activeLangs.includes(prev)) {
+              return activeLangs[0];
+            }
+            return prev;
+          });
+        }
+      } catch (err) {
+        console.error("Error fetching settings:", err);
+      }
+
       try {
         const res = await axios.get(`${API_BASE}/api/projects/${slug}`);
         setProject(res.data);
@@ -35,7 +54,7 @@ const PublicProjectPage = () => {
         setLoading(false);
       }
     };
-    fetchProject();
+    fetchData();
   }, [slug]);
 
   const getPreviewUrl = (fileUrl) => {
@@ -63,10 +82,14 @@ const PublicProjectPage = () => {
               {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
             </button>
 
-            {!isProjectsSite && (
+            {!isProjectsSite && activeLanguages.length > 1 && (
               <div className="lang-switch-mini">
-                <button className={lang === 'az' ? 'active' : ''} onClick={() => setLang('az')}>AZ</button>
-                <button className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>EN</button>
+                {activeLanguages.includes('az') && (
+                  <button className={lang === 'az' ? 'active' : ''} onClick={() => setLang('az')}>AZ</button>
+                )}
+                {activeLanguages.includes('en') && (
+                  <button className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>EN</button>
+                )}
               </div>
             )}
             <button className="icon-btn"><Share2 size={16} /></button>
@@ -117,10 +140,10 @@ const PublicProjectPage = () => {
 
           <div className="resource-grid">
             {[
-              !isProjectsSite && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP (AZ)' : 'MVP (AZ)', file: project.files.word_az },
-              { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP (EN)' : 'MVP (EN)', file: project.files.word_en },
-              !isProjectsSite && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat (AZ)' : 'Presentation (AZ)', file: project.files.ppt_az },
-              { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat (EN)' : 'Presentation (EN)', file: project.files.ppt_en },
+              !isProjectsSite && activeLanguages.includes('az') && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP (AZ)' : 'MVP (AZ)', file: project.files.word_az },
+              activeLanguages.includes('en') && { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP (EN)' : 'MVP (EN)', file: project.files.word_en },
+              !isProjectsSite && activeLanguages.includes('az') && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat (AZ)' : 'Presentation (AZ)', file: project.files.ppt_az },
+              activeLanguages.includes('en') && { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat (EN)' : 'Presentation (EN)', file: project.files.ppt_en },
             ].filter(Boolean).filter(f => f.file).map((item, idx) => (
               <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="resource-card">
                 <div className={`icon-box ${item.type}`}>
