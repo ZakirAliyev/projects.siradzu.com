@@ -12,7 +12,7 @@ const PublicProjectPage = () => {
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light');
   const [project, setProject] = useState(null);
   const isProjectsSite = window.location.hostname === 'projects.siradzu.com';
-  const [lang, setLang] = useState(isProjectsSite ? 'en' : 'az');
+  const [lang, setLang] = useState('az');
   const [loading, setLoading] = useState(true);
   const [previewFile, setPreviewFile] = useState(null);
 
@@ -82,7 +82,7 @@ const PublicProjectPage = () => {
               {theme === 'light' ? <Moon size={16} /> : <Sun size={16} />}
             </button>
 
-            {!isProjectsSite && activeLanguages.length > 1 && (
+            {activeLanguages.length > 1 && (
               <div className="lang-switch-mini">
                 {activeLanguages.includes('az') && (
                   <button className={lang === 'az' ? 'active' : ''} onClick={() => setLang('az')}>AZ</button>
@@ -140,9 +140,9 @@ const PublicProjectPage = () => {
 
           <div className="resource-grid">
             {[
-              !isProjectsSite && activeLanguages.includes('az') && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP (AZ)' : 'MVP (AZ)', file: project.files.word_az },
+              activeLanguages.includes('az') && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP (AZ)' : 'MVP (AZ)', file: project.files.word_az },
               activeLanguages.includes('en') && { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP (EN)' : 'MVP (EN)', file: project.files.word_en },
-              !isProjectsSite && activeLanguages.includes('az') && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat (AZ)' : 'Presentation (AZ)', file: project.files.ppt_az },
+              activeLanguages.includes('az') && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat (AZ)' : 'Presentation (AZ)', file: project.files.ppt_az },
               activeLanguages.includes('en') && { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat (EN)' : 'Presentation (EN)', file: project.files.ppt_en },
             ].filter(Boolean).filter(f => f.file).map((item, idx) => (
               <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="resource-card">

@@ -25,7 +25,7 @@ const LandingPage = () => {
   const isProjectsSite = window.location.hostname === 'projects.siradzu.com';
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [lang, setLang] = useState(isProjectsSite ? 'en' : 'az');
+  const [lang, setLang] = useState('az');
   const [selectedProject, setSelectedProject] = useState(null);
   const [copiedId, setCopiedId] = useState(false);
   const [previewFile, setPreviewFile] = useState(null);
@@ -150,7 +150,7 @@ const LandingPage = () => {
             </button>
 
             {/* Language Switch */}
-            {!isProjectsSite && activeLanguages.length > 1 && (
+            {activeLanguages.length > 1 && (
               <div className="lang-switcher">
                 {activeLanguages.includes('az') && (
                   <button 
@@ -382,9 +382,9 @@ const LandingPage = () => {
 
                   <div className="drawer-files-list">
                     {[
-                      !isProjectsSite && activeLanguages.includes('az') && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP Konsepti (AZ)' : 'MVP Concept (AZ)', file: selectedProject.files.word_az },
+                      activeLanguages.includes('az') && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP Konsepti (AZ)' : 'MVP Concept (AZ)', file: selectedProject.files.word_az },
                       activeLanguages.includes('en') && { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP Konsepti (EN)' : 'MVP Concept (EN)', file: selectedProject.files.word_en },
-                      !isProjectsSite && activeLanguages.includes('az') && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (AZ)' : 'Presentation Document (AZ)', file: selectedProject.files.ppt_az },
+                      activeLanguages.includes('az') && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (AZ)' : 'Presentation Document (AZ)', file: selectedProject.files.ppt_az },
                       activeLanguages.includes('en') && { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (EN)' : 'Presentation Document (EN)', file: selectedProject.files.ppt_en },
                     ].filter(Boolean).filter(f => f.file).map((item) => (
                       <div key={item.id} className="drawer-file-card">
