@@ -12,16 +12,13 @@ const resources = {
     ru: { translation: ru },
 };
 
-const isProjectsSite = typeof window !== 'undefined' && window.location.hostname === 'projects.siradzu.com';
-
 i18n
     .use(LanguageDetector)
     .use(initReactI18next)
     .init({
         resources,
-        lng: isProjectsSite ? 'en' : undefined,
         fallbackLng: 'en',
-        supportedLngs: isProjectsSite ? ['en'] : ['en', 'az', 'ru'],
+        supportedLngs: ['en', 'az', 'ru'],
         interpolation: {
             escapeValue: false,
         },

@@ -65,7 +65,7 @@ const ProjectsPage = () => {
   const [loading, setLoading] = useState(true);
   const [hasOrderChanged, setHasOrderChanged] = useState(false);
   const [activeTab, setActiveTab] = useState('projects'); // 'projects' or 'settings'
-  const [activeLanguages, setActiveLanguages] = useState(['az', 'en']);
+  const [activeLanguages, setActiveLanguages] = useState(['az', 'en', 'ru']);
 
   const t = translations[lang] || translations.az;
 

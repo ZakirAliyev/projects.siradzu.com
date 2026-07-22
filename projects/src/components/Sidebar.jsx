@@ -2,7 +2,7 @@ import React from 'react';
 import { FolderKanban, Globe, LogOut, Sun, Moon } from 'lucide-react';
 import logoImg from '../assets/logo.png';
 
-const Sidebar = ({ lang, setLang, translations, theme, setTheme, activeTab, setActiveTab, activeLanguages = ['az', 'en'] }) => {
+const Sidebar = ({ lang, setLang, translations, theme, setTheme, activeTab, setActiveTab, activeLanguages = ['az', 'en', 'ru'] }) => {
   const handleLogout = () => {
     localStorage.removeItem('adminToken');
     window.location.href = '/login';

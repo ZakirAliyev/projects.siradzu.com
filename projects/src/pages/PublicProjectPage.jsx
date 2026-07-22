@@ -24,13 +24,13 @@ const PublicProjectPage = () => {
     }
   }, [theme]);
 
-  const [activeLanguages, setActiveLanguages] = useState(['az', 'en']);
+  const [activeLanguages, setActiveLanguages] = useState(['az', 'en', 'ru']);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const settingsRes = await axios.get(`${API_BASE}/api/settings`);
-        let activeLangs = ['az', 'en'];
+        let activeLangs = ['az', 'en', 'ru'];
         if (settingsRes.data && settingsRes.data.activeLanguages) {
           activeLangs = settingsRes.data.activeLanguages;
           setActiveLanguages(activeLangs);

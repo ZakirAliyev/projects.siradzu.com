@@ -31,7 +31,15 @@ const readSettings = () => {
             return { activeLanguages: ['az', 'en', 'ru'] };
         }
         const data = fs.readFileSync(SETTINGS_PATH, 'utf8');
-        return JSON.parse(data);
+        const settings = JSON.parse(data);
+        if (settings && Array.isArray(settings.activeLanguages)) {
+            if (!settings.activeLanguages.includes('ru')) {
+                settings.activeLanguages.push('ru');
+                writeSettings(settings);
+            }
+            return settings;
+        }
+        return { activeLanguages: ['az', 'en', 'ru'] };
     } catch (err) {
         console.error('Error reading settings:', err);
         return { activeLanguages: ['az', 'en', 'ru'] };

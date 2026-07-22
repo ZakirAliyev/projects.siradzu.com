@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import { Upload, Trash2 } from 'lucide-react';
 import { API_BASE } from '../config';
 
-const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit, activeLanguages = ['az', 'en'] }) => {
+const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit, activeLanguages = ['az', 'en', 'ru'] }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     name_az: projectToEdit ? (projectToEdit.name?.az || '') : '',

@@ -2,7 +2,7 @@ import { FileText, Presentation, Calendar, Globe } from 'lucide-react';
 
 import { API_BASE } from '../config';
 
-const ProjectDetails = ({ project, lang, activeLanguages = ['az', 'en'] }) => {
+const ProjectDetails = ({ project, lang, activeLanguages = ['az', 'en', 'ru'] }) => {
   if (!project) return null;
 
   const labels = {
