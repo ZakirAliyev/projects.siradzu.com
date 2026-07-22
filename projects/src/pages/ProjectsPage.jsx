@@ -38,6 +38,20 @@ const translations = {
     loadError: 'Load failed',
     list: 'List',
     grid: 'Grid'
+  },
+  ru: {
+    projects: 'Проекты',
+    newProject: 'Новый проект',
+    createTitle: 'Создать новый проект',
+    editTitle: 'Редактировать проект',
+    noProjects: 'Проекты не найдены.',
+    saveOrder: 'Сохранить порядок',
+    orderSaved: 'Порядок успешно обновлен',
+    confirmDelete: 'Вы уверены, что хотите удалить этот проект?',
+    deleteSuccess: 'Проект удален',
+    loadError: 'Ошибка загрузки',
+    list: 'Список',
+    grid: 'Сетка'
   }
 };
 
@@ -53,7 +67,7 @@ const ProjectsPage = () => {
   const [activeTab, setActiveTab] = useState('projects'); // 'projects' or 'settings'
   const [activeLanguages, setActiveLanguages] = useState(['az', 'en']);
 
-  const t = translations[lang];
+  const t = translations[lang] || translations.az;
 
   const getHeaders = () => ({
     headers: { Authorization: `Bearer ${localStorage.getItem('adminToken')}` }
@@ -213,9 +227,22 @@ const ProjectsPage = () => {
                 style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
               >
                 <span className="switch-label-text" style={{ fontWeight: '600' }}>
-                  {lang === 'az' ? 'İngilis dili (EN)' : 'English (EN)'}
+                  {lang === 'az' ? 'İngilis dili (EN)' : (lang === 'ru' ? 'Английский язык (EN)' : 'English (EN)')}
                 </span>
                 <div className={`switch-track ${selectedLangs.includes('en') ? 'active' : ''}`}>
+                  <div className="switch-thumb"></div>
+                </div>
+              </div>
+
+              <div 
+                className="switch-container"
+                onClick={() => handleToggle('ru')}
+                style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}
+              >
+                <span className="switch-label-text" style={{ fontWeight: '600' }}>
+                  {lang === 'az' ? 'Rus dili (RU)' : (lang === 'ru' ? 'Русский язык (RU)' : 'Russian (RU)')}
+                </span>
+                <div className={`switch-track ${selectedLangs.includes('ru') ? 'active' : ''}`}>
                   <div className="switch-thumb"></div>
                 </div>
               </div>

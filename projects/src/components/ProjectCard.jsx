@@ -19,9 +19,9 @@ const ProjectCard = ({ project, lang, onDelete, onView, onEdit, onToggleVisibili
         </div>
       </div>
       <div className="card-body">
-        <h3 style={{ marginBottom: '0.5rem', fontWeight: '700' }}>{project.name[lang]}</h3>
+        <h3 style={{ marginBottom: '0.5rem', fontWeight: '700' }}>{project.name[lang] || project.name.az || project.name.en || project.name.ru}</h3>
         <p style={{ color: 'var(--text-muted)', fontSize: '0.9rem', height: '3.6rem', overflow: 'hidden' }}>
-          {project.description[lang]}
+          {project.description[lang] || project.description.az || project.description.en || project.description.ru}
         </p>
 
         <div style={{ marginTop: '1.5rem', display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
@@ -33,6 +33,26 @@ const ProjectCard = ({ project, lang, onDelete, onView, onEdit, onToggleVisibili
           {project.files.word_en && (
             <a href={`${API_BASE}${project.files.word_en}`} className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }} target="_blank" rel="noreferrer">
               <FileText size={14} /> Word (EN)
+            </a>
+          )}
+          {project.files.word_ru && (
+            <a href={`${API_BASE}${project.files.word_ru}`} className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }} target="_blank" rel="noreferrer">
+              <FileText size={14} /> Word (RU)
+            </a>
+          )}
+          {project.files.ppt_az && (
+            <a href={`${API_BASE}${project.files.ppt_az}`} className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }} target="_blank" rel="noreferrer">
+              <Presentation size={14} /> PPT (AZ)
+            </a>
+          )}
+          {project.files.ppt_en && (
+            <a href={`${API_BASE}${project.files.ppt_en}`} className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }} target="_blank" rel="noreferrer">
+              <Presentation size={14} /> PPT (EN)
+            </a>
+          )}
+          {project.files.ppt_ru && (
+            <a href={`${API_BASE}${project.files.ppt_ru}`} className="btn btn-outline" style={{ padding: '0.4rem 0.8rem', fontSize: '0.75rem' }} target="_blank" rel="noreferrer">
+              <Presentation size={14} /> PPT (RU)
             </a>
           )}
         </div>

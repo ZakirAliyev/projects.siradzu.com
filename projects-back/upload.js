@@ -31,8 +31,10 @@ const upload = multer({
     { name: 'cardImage', maxCount: 1 },
     { name: 'word_az', maxCount: 1 },
     { name: 'word_en', maxCount: 1 },
+    { name: 'word_ru', maxCount: 1 },
     { name: 'ppt_az', maxCount: 1 },
-    { name: 'ppt_en', maxCount: 1 }
+    { name: 'ppt_en', maxCount: 1 },
+    { name: 'ppt_ru', maxCount: 1 }
 ]);
 
 module.exports = upload;

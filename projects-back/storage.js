@@ -28,13 +28,13 @@ const writeProjects = (projects) => {
 const readSettings = () => {
     try {
         if (!fs.existsSync(SETTINGS_PATH)) {
-            return { activeLanguages: ['az', 'en'] };
+            return { activeLanguages: ['az', 'en', 'ru'] };
         }
         const data = fs.readFileSync(SETTINGS_PATH, 'utf8');
         return JSON.parse(data);
     } catch (err) {
         console.error('Error reading settings:', err);
-        return { activeLanguages: ['az', 'en'] };
+        return { activeLanguages: ['az', 'en', 'ru'] };
     }
 };
 

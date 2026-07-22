@@ -7,10 +7,12 @@ import { API_BASE } from '../config';
 const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit, activeLanguages = ['az', 'en'] }) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    name_az: projectToEdit ? projectToEdit.name.az : '',
-    name_en: projectToEdit ? projectToEdit.name.en : '',
-    desc_az: projectToEdit ? projectToEdit.description.az : '',
-    desc_en: projectToEdit ? projectToEdit.description.en : '',
+    name_az: projectToEdit ? (projectToEdit.name?.az || '') : '',
+    name_en: projectToEdit ? (projectToEdit.name?.en || '') : '',
+    name_ru: projectToEdit ? (projectToEdit.name?.ru || '') : '',
+    desc_az: projectToEdit ? (projectToEdit.description?.az || '') : '',
+    desc_en: projectToEdit ? (projectToEdit.description?.en || '') : '',
+    desc_ru: projectToEdit ? (projectToEdit.description?.ru || '') : '',
     website: projectToEdit ? (projectToEdit.website || '') : '',
     showInMenu: projectToEdit ? (projectToEdit.showInMenu !== false) : true,
   });
@@ -18,14 +20,18 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit, activeLangu
     cardImage: null,
     word_az: null,
     word_en: null,
+    word_ru: null,
     ppt_az: null,
     ppt_en: null,
+    ppt_ru: null,
   });
   const [deleteFlags, setDeleteFlags] = useState({
     word_az: false,
     word_en: false,
+    word_ru: false,
     ppt_az: false,
     ppt_en: false,
+    ppt_ru: false,
   });
 
   const handleInputChange = (e) => {
@@ -65,14 +71,14 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit, activeLangu
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
         });
-        toast.success(lang === 'az' ? 'Layihə uğurla yeniləndi!' : 'Project updated successfully!');
+        toast.success(lang === 'az' ? 'Layihə uğurla yeniləndi!' : (lang === 'ru' ? 'Проект успешно обновлен!' : 'Project updated successfully!'));
       } else {
         await axios.post(`${API_BASE}/api/projects`, data, {
           headers: {
             'Authorization': `Bearer ${localStorage.getItem('adminToken')}`
           }
         });
-        toast.success(lang === 'az' ? 'Layihə uğurla əlavə edildi!' : 'Project added successfully!');
+        toast.success(lang === 'az' ? 'Layihə uğurla əlavə edildi!' : (lang === 'ru' ? 'Проект успешно добавлен!' : 'Project added successfully!'));
       }
       onProjectAdded();
       onClose();
@@ -86,16 +92,19 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit, activeLangu
 
   const labels = {
     az: { name: 'Ad', desc: 'Təsvir', cardImg: 'Kard Şəkli', word: 'Word Sənədi', ppt: 'PPT Sənədi', website: 'Vebsayt Linki (Opsional)', showInMenu: 'Menuda Göstər', submit: 'Yarat', submitEdit: 'Yadda Saxla' },
-    en: { name: 'Name', desc: 'Description', cardImg: 'Card Image', word: 'Word Doc', ppt: 'PPT Doc', website: 'Website Link (Optional)', showInMenu: 'Show in Menu', submit: 'Create', submitEdit: 'Save Changes' }
+    en: { name: 'Name', desc: 'Description', cardImg: 'Card Image', word: 'Word Doc', ppt: 'PPT Doc', website: 'Website Link (Optional)', showInMenu: 'Show in Menu', submit: 'Create', submitEdit: 'Save Changes' },
+    ru: { name: 'Название', desc: 'Описание', cardImg: 'Изображение карточки', word: 'Документ Word', ppt: 'Презентация PPT', website: 'Ссылка на сайт (Опционально)', showInMenu: 'Показывать в меню', submit: 'Создать', submitEdit: 'Сохранить изменения' }
   };
 
-  const l = labels[lang];
+  const l = labels[lang] || labels.az;
   const showAz = activeLanguages.includes('az');
   const showEn = activeLanguages.includes('en');
+  const showRu = activeLanguages.includes('ru');
+  const activeCount = [showAz, showEn, showRu].filter(Boolean).length;
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: showAz && showEn ? '1fr 1fr' : '1fr', gap: '1.5rem' }}>
+      <div className="form-grid" style={{ display: 'grid', gridTemplateColumns: `repeat(${activeCount || 1}, 1fr)`, gap: '1.5rem' }}>
         {showAz && (
           <div className="form-section">
             <label className="form-label">{l.name} (AZ)</label>
@@ -112,6 +121,15 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit, activeLangu
 
             <label className="form-label" style={{ marginTop: '1rem' }}>{l.desc} (EN)</label>
             <textarea className="form-control" name="desc_en" rows="4" value={formData.desc_en} onChange={handleInputChange} required={showEn} />
+          </div>
+        )}
+        {showRu && (
+          <div className="form-section">
+            <label className="form-label">{l.name} (RU)</label>
+            <input className="form-control" type="text" name="name_ru" value={formData.name_ru} onChange={handleInputChange} required={showRu} />
+
+            <label className="form-label" style={{ marginTop: '1rem' }}>{l.desc} (RU)</label>
+            <textarea className="form-control" name="desc_ru" rows="4" value={formData.desc_ru} onChange={handleInputChange} required={showRu} />
           </div>
         )}
       </div>
@@ -146,15 +164,15 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit, activeLangu
           {projectToEdit?.cardImage && (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
               <img src={`${API_BASE}${projectToEdit.cardImage}`} style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover', border: '1px solid var(--border)' }} />
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{lang === 'az' ? 'Mövcud Şəkil' : 'Current Image'}</span>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>{lang === 'az' ? 'Mövcud Şəkil' : (lang === 'ru' ? 'Текущее изображение' : 'Current Image')}</span>
             </div>
           )}
           <input type="file" name="cardImage" accept="image/*" onChange={handleFileChange} required={!projectToEdit} />
         </div>
         
-        {showAz || showEn ? (
+        {(showAz || showEn || showRu) ? (
           <div className="file-dropzone">
-            <label className="form-label">{l.word} {showAz && showEn ? '(AZ/EN)' : `(${activeLanguages[0].toUpperCase()})`}</label>
+            <label className="form-label">{l.word} (DOCX)</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {showAz && (
                 <div>
@@ -199,13 +217,35 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit, activeLangu
                   <input type="file" name="word_en" accept=".doc,.docx" onChange={handleFileChange} />
                 </div>
               )}
+
+              {showRu && (
+                <div style={{ marginTop: (showAz || showEn) ? '0.5rem' : 0 }}>
+                  {projectToEdit?.files?.word_ru && !deleteFlags.word_ru && (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem', fontSize: '0.8rem', background: 'rgba(255,255,255,0.05)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+                      <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '120px' }}>Word (RU)</span>
+                      <button type="button" onClick={() => setDeleteFlags(prev => ({ ...prev, word_ru: true }))} style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 0 }}>
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  )}
+                  {deleteFlags.word_ru && (
+                    <div style={{ fontSize: '0.75rem', color: '#ef4444', marginBottom: '0.25rem', textDecoration: 'line-through', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>Word (RU) - {lang === 'az' ? 'Silinəcək' : (lang === 'ru' ? 'Удалить' : 'To be deleted')}</span>
+                      <button type="button" onClick={() => setDeleteFlags(prev => ({ ...prev, word_ru: false }))} style={{ border: 'none', background: 'none', color: '#3b82f6', cursor: 'pointer', fontSize: '0.75rem', padding: 0 }}>
+                        {lang === 'az' ? 'Geri al' : (lang === 'ru' ? 'Отмена' : 'Undo')}
+                      </button>
+                    </div>
+                  )}
+                  <input type="file" name="word_ru" accept=".doc,.docx" onChange={handleFileChange} />
+                </div>
+              )}
             </div>
           </div>
         ) : null}
 
-        {showAz || showEn ? (
+        {(showAz || showEn || showRu) ? (
           <div className="file-dropzone">
-            <label className="form-label">{l.ppt} {showAz && showEn ? '(AZ/EN)' : `(${activeLanguages[0].toUpperCase()})`}</label>
+            <label className="form-label">{l.ppt} (PPTX)</label>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {showAz && (
                 <div>
@@ -248,6 +288,28 @@ const ProjectForm = ({ onProjectAdded, lang, onClose, projectToEdit, activeLangu
                     </div>
                   )}
                   <input type="file" name="ppt_en" accept=".ppt,.pptx" onChange={handleFileChange} />
+                </div>
+              )}
+
+              {showRu && (
+                <div style={{ marginTop: (showAz || showEn) ? '0.5rem' : 0 }}>
+                  {projectToEdit?.files?.ppt_ru && !deleteFlags.ppt_ru && (
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem', fontSize: '0.8rem', background: 'rgba(255,255,255,0.05)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+                      <span style={{ textOverflow: 'ellipsis', overflow: 'hidden', whiteSpace: 'nowrap', maxWidth: '120px' }}>PPT (RU)</span>
+                      <button type="button" onClick={() => setDeleteFlags(prev => ({ ...prev, ppt_ru: true }))} style={{ border: 'none', background: 'none', color: '#ef4444', cursor: 'pointer', display: 'flex', alignItems: 'center', padding: 0 }}>
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  )}
+                  {deleteFlags.ppt_ru && (
+                    <div style={{ fontSize: '0.75rem', color: '#ef4444', marginBottom: '0.25rem', textDecoration: 'line-through', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span>PPT (RU) - {lang === 'az' ? 'Silinəcək' : (lang === 'ru' ? 'Удалить' : 'To be deleted')}</span>
+                      <button type="button" onClick={() => setDeleteFlags(prev => ({ ...prev, ppt_ru: false }))} style={{ border: 'none', background: 'none', color: '#3b82f6', cursor: 'pointer', fontSize: '0.75rem', padding: 0 }}>
+                        {lang === 'az' ? 'Geri al' : (lang === 'ru' ? 'Отмена' : 'Undo')}
+                      </button>
+                    </div>
+                  )}
+                  <input type="file" name="ppt_ru" accept=".ppt,.pptx" onChange={handleFileChange} />
                 </div>
               )}
             </div>

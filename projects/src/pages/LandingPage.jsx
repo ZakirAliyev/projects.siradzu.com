@@ -125,10 +125,29 @@ const LandingPage = () => {
       resources: "Available Resources",
       resourcesDesc: "You can preview the documents online or download them directly to your device.",
       visitWebsite: "Visit Website"
+    },
+    ru: {
+      heroTitle: "Портал цифровых проектов",
+      heroSubtitle: "Единый архивный портал новейших цифровых решений, концепций и презентационных ресурсов Siradzu.",
+      searchPlaceholder: "Поиск проектов...",
+      noProjects: "Проекты пока не добавлены.",
+      adminBtn: "Панель администратора",
+      detailsTitle: "Детали проекта",
+      viewDetails: "Подробнее",
+      download: "Скачать",
+      preview: "Просмотр онлайн",
+      share: "Скопировать ссылку",
+      copied: "Скопировано!",
+      fullPage: "На весь экран",
+      close: "Закрыть",
+      createdAt: "Дата создания",
+      resources: "Доступные ресурсы",
+      resourcesDesc: "Вы можете просмотреть документы онлайн или скачать их на свое устройство.",
+      visitWebsite: "Посетить веб-сайт"
     }
   };
 
-  const t = translations[lang];
+  const t = translations[lang] || translations.az;
 
   return (
     <div className={`landing-page ${theme === 'dark' ? 'dark-theme' : ''}`}>
@@ -166,6 +185,14 @@ const LandingPage = () => {
                     onClick={() => setLang('en')}
                   >
                     EN
+                  </button>
+                )}
+                {activeLanguages.includes('ru') && (
+                  <button 
+                    className={lang === 'ru' ? 'active' : ''} 
+                    onClick={() => setLang('ru')}
+                  >
+                    RU
                   </button>
                 )}
               </div>
@@ -269,18 +296,18 @@ const LandingPage = () => {
                       year: 'numeric', month: 'long', day: 'numeric'
                     })}
                   </span>
-                  <h3>{project.name[lang]}</h3>
-                  <p className="card-desc">{project.description[lang]}</p>
+                  <h3>{project.name[lang] || project.name.az || project.name.en || project.name.ru}</h3>
+                  <p className="card-desc">{project.description[lang] || project.description.az || project.description.en || project.description.ru}</p>
 
                   <div className="card-footer">
                     <div className="resource-indicators">
                       {project.website ? (
                         <span className="indicator-badge web" title="Website Available">WEB</span>
                       ) : null}
-                      {((project.files.word_az && activeLanguages.includes('az')) || (project.files.word_en && activeLanguages.includes('en'))) ? (
+                      {((project.files.word_az && activeLanguages.includes('az')) || (project.files.word_en && activeLanguages.includes('en')) || (project.files.word_ru && activeLanguages.includes('ru'))) ? (
                         <span className="indicator-badge doc" title="Word Document Available">DOC</span>
                       ) : null}
-                      {((project.files.ppt_az && activeLanguages.includes('az')) || (project.files.ppt_en && activeLanguages.includes('en'))) ? (
+                      {((project.files.ppt_az && activeLanguages.includes('az')) || (project.files.ppt_en && activeLanguages.includes('en')) || (project.files.ppt_ru && activeLanguages.includes('ru'))) ? (
                         <span className="indicator-badge ppt" title="Presentation Available">PPT</span>
                       ) : null}
                     </div>
@@ -335,7 +362,7 @@ const LandingPage = () => {
                 <div className="drawer-banner">
                   <img 
                     src={`${API_BASE}${selectedProject.cardImage}`} 
-                    alt={selectedProject.name[lang]} 
+                    alt={selectedProject.name[lang] || selectedProject.name.az || selectedProject.name.en || selectedProject.name.ru} 
                     className="drawer-img"
                     onError={(e) => {
                       e.target.src = 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=1000';
@@ -345,11 +372,11 @@ const LandingPage = () => {
 
                 {/* Info and Metadata */}
                 <div className="drawer-meta-section">
-                  <h2>{selectedProject.name[lang]}</h2>
+                  <h2>{selectedProject.name[lang] || selectedProject.name.az || selectedProject.name.en || selectedProject.name.ru}</h2>
                   <div className="drawer-date-badge">
                     <Calendar size={14} />
                     <span>
-                      {t.createdAt}: {new Date(selectedProject.createdAt).toLocaleDateString(lang === 'az' ? 'az-AZ' : 'en-US', {
+                      {t.createdAt}: {new Date(selectedProject.createdAt).toLocaleDateString(lang === 'az' ? 'az-AZ' : (lang === 'ru' ? 'ru-RU' : 'en-US'), {
                         year: 'numeric', month: 'long', day: 'numeric'
                       })}
                     </span>
@@ -370,7 +397,7 @@ const LandingPage = () => {
                     </div>
                   )}
                   
-                  <p className="drawer-description">{selectedProject.description[lang]}</p>
+                  <p className="drawer-description">{selectedProject.description[lang] || selectedProject.description.az || selectedProject.description.en || selectedProject.description.ru}</p>
                 </div>
 
                 {/* Resource List */}
@@ -382,10 +409,12 @@ const LandingPage = () => {
 
                   <div className="drawer-files-list">
                     {[
-                      activeLanguages.includes('az') && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP Konsepti (AZ)' : 'MVP Concept (AZ)', file: selectedProject.files.word_az },
-                      activeLanguages.includes('en') && { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP Konsepti (EN)' : 'MVP Concept (EN)', file: selectedProject.files.word_en },
-                      activeLanguages.includes('az') && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (AZ)' : 'Presentation Document (AZ)', file: selectedProject.files.ppt_az },
-                      activeLanguages.includes('en') && { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (EN)' : 'Presentation Document (EN)', file: selectedProject.files.ppt_en },
+                      activeLanguages.includes('az') && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP Konsepti (AZ)' : (lang === 'ru' ? 'Концепция MVP (AZ)' : 'MVP Concept (AZ)'), file: selectedProject.files.word_az },
+                      activeLanguages.includes('en') && { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP Konsepti (EN)' : (lang === 'ru' ? 'Концепция MVP (EN)' : 'MVP Concept (EN)'), file: selectedProject.files.word_en },
+                      activeLanguages.includes('ru') && { id: 'word_ru', type: 'word', label: lang === 'az' ? 'MVP Konsepti (RU)' : (lang === 'ru' ? 'Концепция MVP (RU)' : 'MVP Concept (RU)'), file: selectedProject.files.word_ru },
+                      activeLanguages.includes('az') && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (AZ)' : (lang === 'ru' ? 'Презентация (AZ)' : 'Presentation Document (AZ)'), file: selectedProject.files.ppt_az },
+                      activeLanguages.includes('en') && { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (EN)' : (lang === 'ru' ? 'Презентация (EN)' : 'Presentation Document (EN)'), file: selectedProject.files.ppt_en },
+                      activeLanguages.includes('ru') && { id: 'ppt_ru', type: 'ppt', label: lang === 'az' ? 'Təqdimat Sənədi (RU)' : (lang === 'ru' ? 'Презентация (RU)' : 'Presentation Document (RU)'), file: selectedProject.files.ppt_ru },
                     ].filter(Boolean).filter(f => f.file).map((item) => (
                       <div key={item.id} className="drawer-file-card">
                         <div className={`drawer-file-icon ${item.type}`}>

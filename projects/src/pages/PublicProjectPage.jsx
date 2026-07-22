@@ -90,6 +90,9 @@ const PublicProjectPage = () => {
                 {activeLanguages.includes('en') && (
                   <button className={lang === 'en' ? 'active' : ''} onClick={() => setLang('en')}>EN</button>
                 )}
+                {activeLanguages.includes('ru') && (
+                  <button className={lang === 'ru' ? 'active' : ''} onClick={() => setLang('ru')}>RU</button>
+                )}
               </div>
             )}
             <button className="icon-btn"><Share2 size={16} /></button>
@@ -100,14 +103,14 @@ const PublicProjectPage = () => {
       <main>
         <section className="hero">
           <div className="hero-image-container">
-            <img src={`${API_BASE}${project.cardImage}`} alt={project.name[lang]} className="hero-img" />
+            <img src={`${API_BASE}${project.cardImage}`} alt={project.name[lang] || project.name.az || project.name.en || project.name.ru} className="hero-img" />
           </div>
 
           <div className="hero-text">
             <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
-              <div className="badge">{lang === 'az' ? 'Layihə Təfərrüatı' : 'Project Details'}</div>
-              <h1>{project.name[lang]}</h1>
-              <p>{project.description[lang]}</p>
+              <div className="badge">{lang === 'az' ? 'Layihə Təfərrüatı' : (lang === 'ru' ? 'Детали проекта' : 'Project Details')}</div>
+              <h1>{project.name[lang] || project.name.az || project.name.en || project.name.ru}</h1>
+              <p>{project.description[lang] || project.description.az || project.description.en || project.description.ru}</p>
 
               {project.website && (
                 <div style={{ marginBottom: '1.5rem' }}>
@@ -119,7 +122,7 @@ const PublicProjectPage = () => {
                     style={{ display: 'inline-flex', width: 'auto', padding: '10px 20px', fontSize: '0.85rem', alignValues: 'center' }}
                   >
                     <Globe size={16} />
-                    <span>{lang === 'az' ? 'Vebsaytı Ziyarət Et' : 'Visit Website'}</span>
+                    <span>{lang === 'az' ? 'Vebsaytı Ziyarət Et' : (lang === 'ru' ? 'Посетить веб-сайт' : 'Visit Website')}</span>
                   </a>
                 </div>
               )}
@@ -134,16 +137,18 @@ const PublicProjectPage = () => {
 
         <section className="resources">
           <div className="section-header">
-            <h2>{lang === 'az' ? 'Resurslar' : 'Resources'}</h2>
-            <p>{lang === 'az' ? 'Sənədlərə onlayn baxa və ya yükləyə bilərsiniz.' : 'You can preview or download documents below.'}</p>
+            <h2>{lang === 'az' ? 'Resurslar' : (lang === 'ru' ? 'Ресурсы' : 'Resources')}</h2>
+            <p>{lang === 'az' ? 'Sənədlərə onlayn baxa və ya yükləyə bilərsiniz.' : (lang === 'ru' ? 'Вы можете просмотреть документы онлайн или скачать их.' : 'You can preview or download documents below.')}</p>
           </div>
 
           <div className="resource-grid">
             {[
-              activeLanguages.includes('az') && { id: 'word_az', type: 'word', label: lang === 'az' ? 'MVP (AZ)' : 'MVP (AZ)', file: project.files.word_az },
-              activeLanguages.includes('en') && { id: 'word_en', type: 'word', label: lang === 'az' ? 'MVP (EN)' : 'MVP (EN)', file: project.files.word_en },
-              activeLanguages.includes('az') && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat (AZ)' : 'Presentation (AZ)', file: project.files.ppt_az },
-              activeLanguages.includes('en') && { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat (EN)' : 'Presentation (EN)', file: project.files.ppt_en },
+              activeLanguages.includes('az') && { id: 'word_az', type: 'word', label: 'MVP (AZ)', file: project.files.word_az },
+              activeLanguages.includes('en') && { id: 'word_en', type: 'word', label: 'MVP (EN)', file: project.files.word_en },
+              activeLanguages.includes('ru') && { id: 'word_ru', type: 'word', label: 'MVP (RU)', file: project.files.word_ru },
+              activeLanguages.includes('az') && { id: 'ppt_az', type: 'ppt', label: lang === 'az' ? 'Təqdimat (AZ)' : (lang === 'ru' ? 'Презентация (AZ)' : 'Presentation (AZ)'), file: project.files.ppt_az },
+              activeLanguages.includes('en') && { id: 'ppt_en', type: 'ppt', label: lang === 'az' ? 'Təqdimat (EN)' : (lang === 'ru' ? 'Презентация (EN)' : 'Presentation (EN)'), file: project.files.ppt_en },
+              activeLanguages.includes('ru') && { id: 'ppt_ru', type: 'ppt', label: lang === 'az' ? 'Təqdimat (RU)' : (lang === 'ru' ? 'Презентация (RU)' : 'Presentation (RU)'), file: project.files.ppt_ru },
             ].filter(Boolean).filter(f => f.file).map((item, idx) => (
               <motion.div key={item.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: idx * 0.05 }} className="resource-card">
                 <div className={`icon-box ${item.type}`}>
@@ -153,14 +158,14 @@ const PublicProjectPage = () => {
                   <h3>{item.label}</h3>
                   <div className="res-actions">
                     <button className="action-link view" onClick={() => setPreviewFile(item.file)}>
-                      <Eye size={14} /> {lang === 'az' ? 'Bax' : 'View'}
+                      <Eye size={14} /> {lang === 'az' ? 'Bax' : (lang === 'ru' ? 'Просмотр' : 'View')}
                     </button>
                     <a
                       href={`${API_BASE}${item.file}`}
                       className="action-link download"
-                      download={`${project.name[lang]}-${item.label.replace(/\s+/g, '-')}.docx`}
+                      download={`${project.name[lang] || project.name.az || project.name.en || project.name.ru}-${item.label.replace(/\s+/g, '-')}.docx`}
                     >
-                      <Download size={14} /> {lang === 'az' ? 'Yüklə' : 'Download'}
+                      <Download size={14} /> {lang === 'az' ? 'Yüklə' : (lang === 'ru' ? 'Скачать' : 'Download')}
                     </a>
                   </div>
                 </div>
@@ -175,7 +180,7 @@ const PublicProjectPage = () => {
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="preview-overlay">
             <motion.div initial={{ y: "100%" }} animate={{ y: 0 }} exit={{ y: "100%" }} transition={{ type: "spring", damping: 30, stiffness: 300 }} className="preview-sheet">
               <div className="sheet-header">
-                <h3>{lang === 'az' ? 'Sənədə Baxış' : 'Document Preview'}</h3>
+                <h3>{lang === 'az' ? 'Sənədə Baxış' : (lang === 'ru' ? 'Просмотр документа' : 'Document Preview')}</h3>
                 <button className="close-sheet" onClick={() => setPreviewFile(null)}>
                   <ArrowLeft size={20} />
                 </button>

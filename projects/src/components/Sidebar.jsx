@@ -37,7 +37,11 @@ const Sidebar = ({ lang, setLang, translations, theme, setTheme, activeTab, setA
         {activeLanguages.length > 1 && (
           <div 
             className="sidebar-lang-toggle" 
-            onClick={() => setLang(lang === 'az' ? 'en' : 'az')}
+            onClick={() => {
+              const idx = activeLanguages.indexOf(lang);
+              const nextLang = activeLanguages[(idx + 1) % activeLanguages.length] || activeLanguages[0];
+              setLang(nextLang);
+            }}
             style={{ marginTop: '0.5rem' }}
           >
             <Globe size={20} />

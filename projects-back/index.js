@@ -64,12 +64,12 @@ app.get(['/api/projects/:slug', '/projects/:slug'], (req, res) => {
 app.post(['/api/projects', '/projects'], authenticateToken, (req, res) => {
     upload(req, res, (err) => {
         if (err) return res.status(500).json({ error: err.message });
-        const { name_az, name_en, desc_az, desc_en, website, showInMenu } = req.body;
+        const { name_az, name_en, name_ru, desc_az, desc_en, desc_ru, website, showInMenu } = req.body;
         const files = req.files;
         if (!files || !files['cardImage']) return res.status(400).json({ error: 'Card image is required' });
 
         const projects = readProjects();
-        let slug = slugify(name_en || name_az || 'project', { lower: true, strict: true });
+        let slug = slugify(name_en || name_az || name_ru || 'project', { lower: true, strict: true });
         let originalSlug = slug;
         let counter = 1;
         while (projects.some(p => p.slug === slug)) {
@@ -81,16 +81,18 @@ app.post(['/api/projects', '/projects'], authenticateToken, (req, res) => {
             id: randomUUID(),
             slug,
             order: projects.length,
-            name: { az: name_az, en: name_en },
-            description: { az: desc_az, en: desc_en },
+            name: { az: name_az || '', en: name_en || '', ru: name_ru || '' },
+            description: { az: desc_az || '', en: desc_en || '', ru: desc_ru || '' },
             website: website || '',
             showInMenu: showInMenu !== undefined ? (showInMenu === 'true' || showInMenu === true) : true,
             cardImage: `/uploads/${files['cardImage'][0].filename}`,
             files: {
                 word_az: files['word_az'] ? `/uploads/${files['word_az'][0].filename}` : null,
                 word_en: files['word_en'] ? `/uploads/${files['word_en'][0].filename}` : null,
+                word_ru: files['word_ru'] ? `/uploads/${files['word_ru'][0].filename}` : null,
                 ppt_az: files['ppt_az'] ? `/uploads/${files['ppt_az'][0].filename}` : null,
-                ppt_en: files['ppt_en'] ? `/uploads/${files['ppt_en'][0].filename}` : null
+                ppt_en: files['ppt_en'] ? `/uploads/${files['ppt_en'][0].filename}` : null,
+                ppt_ru: files['ppt_ru'] ? `/uploads/${files['ppt_ru'][0].filename}` : null
             },
             createdAt: new Date().toISOString()
         };
@@ -117,7 +119,7 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
     upload(req, res, (err) => {
         if (err) return res.status(500).json({ error: err.message });
         const { id } = req.params;
-        const { name_az, name_en, desc_az, desc_en, website, showInMenu, delete_word_az, delete_word_en, delete_ppt_az, delete_ppt_en } = req.body;
+        const { name_az, name_en, name_ru, desc_az, desc_en, desc_ru, website, showInMenu, delete_word_az, delete_word_en, delete_word_ru, delete_ppt_az, delete_ppt_en, delete_ppt_ru } = req.body;
         const files = req.files || {};
 
         const projects = readProjects();
@@ -127,15 +129,20 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
         }
 
         const project = projects[projectIndex];
+        if (!project.name) project.name = {};
+        if (!project.description) project.description = {};
+        if (!project.files) project.files = {};
 
         if (name_az !== undefined) project.name.az = name_az;
+        if (name_en !== undefined) project.name.en = name_en;
+        if (name_ru !== undefined) project.name.ru = name_ru;
+
         if (website !== undefined) project.website = website;
         if (showInMenu !== undefined) {
             project.showInMenu = showInMenu === 'true' || showInMenu === true;
         }
         
         if (name_en !== undefined && name_en !== project.name.en && name_en !== '') {
-            project.name.en = name_en;
             let slug = slugify(name_en, { lower: true, strict: true });
             let originalSlug = slug;
             let counter = 1;
@@ -145,7 +152,6 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
             }
             project.slug = slug;
         } else if (name_az !== undefined && name_az !== project.name.az && (!name_en || name_en === '')) {
-            project.name.az = name_az;
             let slug = slugify(name_az, { lower: true, strict: true });
             let originalSlug = slug;
             let counter = 1;
@@ -158,6 +164,7 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
 
         if (desc_az !== undefined) project.description.az = desc_az;
         if (desc_en !== undefined) project.description.en = desc_en;
+        if (desc_ru !== undefined) project.description.ru = desc_ru;
 
         if (files['cardImage']) {
             project.cardImage = `/uploads/${files['cardImage'][0].filename}`;
@@ -173,6 +180,11 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
             project.files.word_en = `/uploads/${files['word_en'][0].filename}`;
         }
 
+        if (delete_word_ru === 'true') project.files.word_ru = null;
+        else if (files['word_ru']) {
+            project.files.word_ru = `/uploads/${files['word_ru'][0].filename}`;
+        }
+
         if (delete_ppt_az === 'true') project.files.ppt_az = null;
         else if (files['ppt_az']) {
             project.files.ppt_az = `/uploads/${files['ppt_az'][0].filename}`;
@@ -181,6 +193,11 @@ app.put(['/api/projects/:id', '/projects/:id'], authenticateToken, (req, res) =>
         if (delete_ppt_en === 'true') project.files.ppt_en = null;
         else if (files['ppt_en']) {
             project.files.ppt_en = `/uploads/${files['ppt_en'][0].filename}`;
+        }
+
+        if (delete_ppt_ru === 'true') project.files.ppt_ru = null;
+        else if (files['ppt_ru']) {
+            project.files.ppt_ru = `/uploads/${files['ppt_ru'][0].filename}`;
         }
 
         project.updatedAt = new Date().toISOString();
@@ -211,8 +228,8 @@ app.put(['/api/settings', '/settings'], authenticateToken, (req, res) => {
     if (!Array.isArray(activeLanguages) || activeLanguages.length === 0) {
         return res.status(400).json({ error: 'At least one active language is required.' });
     }
-    // Only allow 'az' and 'en'
-    const allowed = ['az', 'en'];
+    // Only allow 'az', 'en', and 'ru'
+    const allowed = ['az', 'en', 'ru'];
     const invalid = activeLanguages.some(l => !allowed.includes(l));
     if (invalid) {
         return res.status(400).json({ error: 'Invalid language code' });
